@@ -1,0 +1,14 @@
+@use 'styles' as *;
+
+.button {
+  border-radius: $radius-m;
+  background: $color-primary;
+  color: $color-foreground-inverted;
+  font-weight: $font-bold;
+  padding: $space-padding-button;
+  transition: background-color $transition-main;
+
+  &:hover:enabled {
+    background: $color-primary-light;
+  }
+}

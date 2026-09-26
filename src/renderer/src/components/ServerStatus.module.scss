@@ -1,0 +1,6 @@
+@use 'styles' as *;
+
+.players {
+  color: $color-foreground-dim;
+  @include body3;
+}

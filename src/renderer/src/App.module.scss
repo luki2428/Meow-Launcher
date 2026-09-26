@@ -1,0 +1,145 @@
+.appShell {
+  min-height: 100dvh;
+  max-width: 160rem;
+  margin: auto;
+  padding: 0 4rem;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding: 2.6rem 0;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  font-size: 2.8rem;
+  font-weight: 750;
+  letter-spacing: -0.1rem;
+}
+.logo {
+  width: 4.4rem;
+  height: 4.4rem;
+  display: grid;
+  place-items: center;
+  background: #a487f5;
+  color: #211a35;
+  border-radius: 1.3rem;
+  font-size: 3.1rem;
+}
+.brandSub {
+  display: block;
+  font-size: 0.9rem;
+  letter-spacing: 0.2rem;
+  color: #88858f;
+  font-weight: 600;
+  margin-top: 0.3rem;
+}
+.account {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  text-align: left;
+  padding: 0.8rem 1.2rem;
+  border: 1px solid #36343d;
+  border-radius: 1.2rem;
+  background: #242329;
+  color: #efedf4;
+}
+.account:hover {
+  background: #2f2c36;
+}
+.account strong {
+  display: block;
+  font-size: 1.3rem;
+}
+.account small {
+  display: block;
+  font-size: 1.1rem;
+  color: #a29eac;
+  margin-top: 0.3rem;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.8rem;
+  background: #393045;
+  color: #c8b3fa;
+  font-weight: 700;
+}
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.8rem 0;
+  font-size: 1rem;
+  color: #85818f;
+  letter-spacing: 0.07rem;
+}
+@media (max-width: 850px) {
+  .appShell {
+    padding: 0 2.4rem;
+  }
+  .header {
+    padding: 2rem 0;
+  }
+}
+
+@media (max-height: 650px) {
+  .header {
+    padding: 1.4rem 0;
+  }
+  .main {
+    gap: 1.6rem;
+  }
+  .footer {
+    padding: 1.2rem 0;
+  }
+}
+
+.accountMenu {
+  position: relative;
+}
+.accountDropdown {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 0.8rem);
+  right: 0;
+  min-width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #40384b;
+  border-radius: 1.2rem;
+  background: #29262f;
+  box-shadow: 0 1rem 3rem #0005;
+
+  button {
+    width: 100%;
+    padding: 1.2rem 1.4rem;
+    border-radius: 0.8rem;
+    text-align: left;
+    white-space: nowrap;
+    color: #eeeaf4;
+    font-size: 1.3rem;
+
+    &:hover {
+      background: #393044;
+    }
+  }
+}
+.account:focus-visible,
+.accountDropdown button:focus-visible {
+  outline: 2px solid #c3a7f9;
+  outline-offset: 2px;
+}

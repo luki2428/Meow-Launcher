@@ -1,0 +1,18 @@
+@use 'styles' as *;
+
+.playArea {
+  @include element-flex(row, 'flex-start', 'center');
+  gap: $spacing-5;
+  margin-top: $spacing-8;
+
+  .playButton {
+    min-width: 14.5rem;
+    font-size: $font-size-l;
+    padding: $spacing-4;
+  }
+}
+
+.message {
+  max-width: 34rem;
+  @include body3;
+}

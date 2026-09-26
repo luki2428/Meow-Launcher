@@ -1,0 +1,129 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+.content p {
+  margin: 0;
+}
+.description {
+  color: #aaa3b4;
+  font-size: 1.3rem;
+  line-height: 1.6;
+}
+.choices {
+  display: grid;
+  gap: 1.2rem;
+}
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  width: 100%;
+  padding: 1.8rem;
+  text-align: left;
+  color: #eeeaf4;
+  background: #2c2932;
+  border: 1px solid #443b50;
+  border-radius: 1.2rem;
+  &:hover:not(:disabled) {
+    background: #352e40;
+    border-color: #a684ed;
+  }
+  &:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  &:focus-visible {
+    outline: 2px solid #c3a7f9;
+    outline-offset: 3px;
+  }
+  > svg {
+    margin-left: auto;
+    flex-shrink: 0;
+    color: #a99abf;
+  }
+  strong {
+    display: block;
+    font-size: 1.35rem;
+    font-weight: 600;
+  }
+  small {
+    display: block;
+    margin-top: 0.5rem;
+    color: #aaa2b5;
+    font-size: 1.15rem;
+  }
+}
+.microsoftIcon {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px;
+  width: 2.4rem;
+  height: 2.4rem;
+  margin: 0.6rem;
+  flex-shrink: 0;
+  i:nth-child(1) {
+    background: #f25022;
+  }
+  i:nth-child(2) {
+    background: #7fba00;
+  }
+  i:nth-child(3) {
+    background: #00a4ef;
+  }
+  i:nth-child(4) {
+    background: #ffb900;
+  }
+}
+.offlineIcon {
+  display: grid;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  flex-shrink: 0;
+  color: #c8acf6;
+  background: #443454;
+  border-radius: 0.8rem;
+}
+.back {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  align-self: flex-start;
+  color: #c3a7f9;
+  font-size: 1.2rem;
+}
+.form {
+  display: grid;
+  gap: 1rem;
+  label {
+    font-size: 1.3rem;
+    color: #eeeaf4;
+  }
+  input {
+    width: 100%;
+    background: #1c1b21;
+    border: 1px solid #4a4058;
+    border-radius: 0.8rem;
+    color: #eeeaf4;
+    padding: 1.4rem;
+  }
+  input:focus-visible {
+    outline: 2px solid #b896f4;
+    outline-offset: 2px;
+  }
+  button {
+    margin-top: 1rem;
+  }
+}
+.content .hint {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #a29aae;
+}
+.error {
+  font-size: 1.2rem;
+  color: #ffb4b4;
+  line-height: 1.6;
+}

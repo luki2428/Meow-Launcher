@@ -1,0 +1,7 @@
+{
+  "version": "local-dev",
+  "minecraft": "1.21.1",
+  "java": { "majorVersion": 21, "architecture": "x64" },
+  "loader": { "type": "neoforge", "version": "21.1.172" },
+  "files": []
+}

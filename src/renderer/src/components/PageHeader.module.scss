@@ -1,0 +1,15 @@
+@use 'styles' as *;
+
+.header {
+  margin-bottom: $spacing-8;
+}
+
+.eyebrow {
+  @include eyebrow;
+  margin-bottom: $spacing-3;
+}
+
+.title {
+  letter-spacing: $letter-spacing-1;
+  margin-bottom: $spacing-3;
+}

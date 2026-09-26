@@ -1,0 +1,358 @@
+.settings {
+  display: grid;
+  gap: 1.6rem;
+}
+.intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.intro p {
+  font-size: 1.3rem;
+}
+.intro > span {
+  color: #aaa0b8;
+  font-size: 1rem;
+  letter-spacing: 0.12rem;
+  white-space: nowrap;
+}
+.fields {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  display: grid;
+  gap: 1.2rem;
+}
+.section {
+  padding: 2rem;
+  border: 1px solid #443c50;
+  border-radius: 1.2rem;
+  background: linear-gradient(125deg, #30293688, #27242d);
+}
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 1.8rem;
+}
+.heading h3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+.heading p {
+  font-size: 1.2rem;
+  margin-top: 0.2rem;
+}
+.icon {
+  display: grid;
+  place-items: center;
+  width: 3.8rem;
+  height: 3.8rem;
+  border-radius: 1rem;
+  background: #b18beb14;
+  color: #bd9bef;
+  flex-shrink: 0;
+}
+.badge {
+  margin-left: auto;
+  padding: 0.5rem 1rem;
+  border: 1px solid #b18beb40;
+  border-radius: 0.8rem;
+  color: #d5b7ff;
+  font-size: 1.6rem;
+  white-space: nowrap;
+}
+.label {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+.label span {
+  color: #aba2b6;
+  font-size: 1.2rem;
+}
+.range {
+  width: 100%;
+  accent-color: #b18beb;
+  cursor: pointer;
+}
+.rangeLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  color: #aaa0b8;
+  font-size: 1.1rem;
+}
+.presets {
+  display: flex;
+  gap: 0.8rem;
+  margin: 1.2rem 0;
+}
+.presets button,
+.pathRow button {
+  border: 1px solid #53465f;
+  border-radius: 0.7rem;
+  color: #ded5e9;
+  padding: 0.7rem 1.2rem;
+  font-size: 1.2rem;
+  background: #342e3c;
+}
+.presets button[aria-pressed='true'] {
+  border-color: #b18beb;
+  color: #e0caff;
+  background: #b18beb25;
+}
+.presets button:hover,
+.pathRow button:hover {
+  background: #493d56;
+}
+.hint {
+  font-size: 1.15rem;
+  margin-top: 1rem;
+}
+.pathRow {
+  display: flex;
+  gap: 0.8rem;
+}
+.pathRow input,
+.dimensions input {
+  min-width: 0;
+  border: 1px solid #4d4459;
+  border-radius: 0.7rem;
+  background: #1e1b24;
+  color: #e4ddeb;
+  padding: 1rem;
+}
+.pathRow input {
+  flex: 1;
+  font-size: 1.2rem;
+  text-overflow: ellipsis;
+}
+.pathRow button {
+  flex-shrink: 0;
+}
+.link {
+  color: #c5a6f1;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 1.2rem;
+}
+.link:hover {
+  color: #e4d1ff;
+}
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  background: #d8ac5b10;
+  color: #e0c495;
+  border: 1px solid #d8ac5b30;
+  border-radius: 0.8rem;
+  padding: 1.2rem;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+}
+.notice svg {
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+.toggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.6rem;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+.toggleRow small,
+.footer small {
+  display: block;
+  color: #aaa0b8;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+.toggleRow input {
+  appearance: none;
+  width: 3.8rem;
+  height: 2.2rem;
+  border: 1px solid #675874;
+  border-radius: 2rem;
+  background: #403747;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.toggleRow input::before {
+  content: '';
+  display: block;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: #eee5f9;
+  margin: 0.2rem;
+  transition: transform 0.15s;
+}
+.toggleRow input:checked {
+  background: #9870d1;
+  border-color: #bd9bef;
+}
+.toggleRow input:checked::before {
+  transform: translateX(1.6rem);
+}
+.dimensions {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.2rem;
+  margin-top: 1.8rem;
+}
+.dimensions label {
+  flex: 1;
+  min-width: 0;
+  font-size: 1.2rem;
+}
+.dimensions label span {
+  color: #aaa0b8;
+  float: right;
+}
+.dimensions input {
+  width: 100%;
+  display: block;
+  margin-top: 0.7rem;
+  font-size: 1.3rem;
+}
+.dimensions > span {
+  padding-bottom: 1rem;
+  color: #aaa0b8;
+}
+.fields:disabled,
+.dimensions input:disabled {
+  opacity: 0.55;
+}
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.6rem;
+  border-top: 1px solid #453c50;
+  padding-top: 1.6rem;
+}
+.saveState {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #d3c4e2;
+  font-size: 1.2rem;
+}
+.success {
+  color: #aed3b7;
+  font-size: 1.2rem;
+}
+@media (max-width: 560px) {
+  .intro > span {
+    display: none;
+  }
+  .section {
+    padding: 1.4rem;
+  }
+  .footer {
+    flex-wrap: wrap;
+  }
+  .label span {
+    display: none;
+  }
+  .pathRow {
+    flex-wrap: wrap;
+  }
+  .pathRow input {
+    flex-basis: 100%;
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #443c50;
+  border-radius: 1rem;
+  background: #1e1b2455;
+}
+.tabs button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 1rem 0.6rem;
+  border-radius: 0.7rem;
+  color: #ada3b9;
+  font-size: 1.2rem;
+}
+.tabs button:hover {
+  color: #ece4f7;
+  background: #b18beb10;
+}
+.tabs button[aria-pressed='true'] {
+  color: #e4cfff;
+  background: #b18beb22;
+  box-shadow: inset 0 0 0 1px #b18beb25;
+}
+.section {
+  min-height: 25rem;
+}
+
+.fields[hidden] {
+  display: none;
+}
+.developerMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.2rem;
+  background: #1e1b2466;
+  border-radius: 0.8rem;
+  color: #aaa0b8;
+  font-size: 1.2rem;
+}
+.developerMeta strong {
+  color: #ded5e9;
+  margin-left: 0.5rem;
+}
+.manifest {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  color: #c5a6f1;
+  padding-top: 1rem;
+  font-size: 1.2rem;
+}
+.manifest svg {
+  flex-shrink: 0;
+}
+.manifest div {
+  min-width: 0;
+}
+.manifest code,
+.manifest small {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #aaa0b8;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+@media (max-width: 560px) {
+  .tabs {
+    flex-wrap: wrap;
+  }
+  .tabs button {
+    flex-basis: 45%;
+  }
+}
+.footer[hidden] {
+  display: none;
+}

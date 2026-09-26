@@ -1,0 +1,38 @@
+.dialog {
+  color: var(--color-foreground);
+  background: #242329;
+  border: 1px solid #47404f;
+  border-radius: 1.8rem;
+  padding: 2.8rem;
+  margin: auto;
+  width: min(62rem, calc(100vw - 5rem));
+  max-height: calc(100dvh - 6rem);
+  overflow-y: auto;
+  box-shadow: 0 3rem 10rem #0008;
+}
+.dialog::backdrop {
+  background: #111015b8;
+  backdrop-filter: blur(6px);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 1.8rem;
+}
+.header h2 {
+  font-size: 2.4rem;
+}
+.header button {
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 0.8rem;
+  background: #36313e;
+  color: #d1c8df;
+  font-size: 2.3rem;
+}
+
+.compact {
+  width: min(46rem, calc(100vw - 4rem));
+}

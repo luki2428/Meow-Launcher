@@ -1,0 +1,23 @@
+export const IPC = {
+  authLoginMicrosoft: 'auth:login-microsoft',
+  authLoginOffline: 'auth:login-offline',
+  authLogout: 'auth:logout',
+  authAccounts: 'auth:accounts',
+  authSelected: 'auth:selected',
+  authSelect: 'auth:select',
+  minecraftLaunch: 'minecraft:launch',
+  minecraftState: 'minecraft:state',
+  minecraftProgress: 'minecraft:progress',
+  getSnapshot: 'launcher:get-snapshot',
+  setRam: 'launcher:set-ram',
+  savePreferences: 'launcher:save-preferences',
+  chooseInstallationDirectory: 'launcher:choose-installation-directory',
+  openGameDirectory: 'launcher:open-game-directory',
+  getDeveloperPack: 'developer:get-pack',
+  generateDeveloperPack: 'developer:generate-pack',
+  setDeveloperMode: 'developer:set-mode',
+  openDeveloperPackDirectory: 'developer:open-pack-directory',
+  saveOfflineAccount: 'launcher:save-offline-account',
+  selectAccount: 'launcher:select-account',
+  removeAccount: 'launcher:remove-account'
+} as const

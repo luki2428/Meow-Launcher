@@ -1,0 +1,72 @@
+@use 'styles/vars' as *;
+@use 'styles/colors' as *;
+@use 'styles/mixins' as *;
+
+html {
+  font-size: 62.5%; // 1rem = 10px
+}
+
+body {
+  font-family: $main-font;
+  color: $color-foreground;
+  background-color: $color-background-3;
+  min-width: $size-app-min-width;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  @include body2;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  @include button;
+  background-color: transparent;
+  padding: 0;
+  cursor: pointer;
+
+  &:disabled {
+    @include disabled-styling;
+    opacity: 0.5;
+  }
+}
+
+button,
+a,
+input {
+  &:focus-visible {
+    outline: $outline-focus;
+    outline-offset: 0.5rem;
+  }
+}
+
+h1 {
+  @include title1;
+}
+h2 {
+  @include title2;
+}
+h3 {
+  @include title3;
+}
+h4 {
+  @include title4;
+}
+h5 {
+  @include title5;
+}
+h6 {
+  @include title6;
+}
+
+p {
+  color: $color-foreground-dim;
+  line-height: 160%;
+}
+
+a {
+  color: inherit;
+}

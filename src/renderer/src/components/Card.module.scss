@@ -1,0 +1,27 @@
+@use 'styles' as *;
+
+// Style treści przez :where(), żeby moduły korzystające z Card mogły je łatwo nadpisać.
+.card {
+  background: $color-background-1;
+  border: $border-main;
+  padding: $space-padding-card;
+  border-radius: $radius-l;
+
+  :where(h1, h2) {
+    margin-bottom: $spacing-2;
+  }
+
+  :where(h2) {
+    @include title4;
+  }
+
+  :where(p) {
+    margin-bottom: $spacing-3;
+    @include body3;
+  }
+
+  .eyebrow {
+    @include eyebrow($font-size-xxxs);
+    margin-bottom: $spacing-5;
+  }
+}

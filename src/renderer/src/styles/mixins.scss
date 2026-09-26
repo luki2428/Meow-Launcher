@@ -1,0 +1,238 @@
+@use 'sass:string';
+@use 'styles/vars' as *;
+@use 'styles/responsive' as *;
+@use 'styles/colors' as *;
+
+@mixin light-theme {
+  @at-root :global(.light-mode) & {
+    @content;
+  }
+}
+
+@mixin dark-theme {
+  @at-root :global(.dark-mode) & {
+    @content;
+  }
+}
+
+@mixin placeholder {
+  &::placeholder {
+    @content;
+  }
+  &::-webkit-input-placeholder {
+    @content;
+  }
+  &:-moz-placeholder {
+    @content;
+  }
+  &::-moz-placeholder {
+    @content;
+  }
+  &:-ms-input-placeholder {
+    @content;
+  }
+}
+
+@mixin disableSelection {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+@mixin hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: 0.8rem;
+  scrollbar-color: transparent transparent;
+
+  &::-webkit-scrollbar {
+    visibility: hidden;
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+}
+
+@mixin custom-scrollbar($color-thumb: $color-background-3, $color-track: transparent) {
+  -ms-overflow-style: inherit;
+  scrollbar-width: 0.4rem;
+  scrollbar-color: $color-thumb $color-track;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    visibility: visible;
+    width: 0.4rem;
+    height: 0.4rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: $color-track;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $color-thumb;
+    border-radius: 0.8rem;
+  }
+}
+
+@mixin disabled-styling {
+  & {
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
+}
+
+@mixin disabled-ui {
+  > * {
+    @include disabled-styling;
+  }
+
+  @include disabled-styling;
+}
+
+@mixin keyframe-fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@mixin loading-spinner-animation {
+  @keyframes loading-spinner {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  & {
+    animation: loading-spinner 1s linear infinite;
+  }
+}
+
+@mixin appearance($value) {
+  -webkit-appearance: $value;
+  -moz-appearance: $value;
+  appearance: $value;
+}
+
+@mixin single-line-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+@mixin limit-lines($line-s-amount) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $line-s-amount; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+@mixin trimText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin element-flex($direction, $justify: 'flex-start', $align: 'flex-start') {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: string.unquote($justify);
+  align-items: string.unquote($align);
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin title1 {
+  font-weight: $font-regular;
+  font-size: $font-size-xxxl;
+  line-height: 128%;
+
+  @include tabletWidth {
+    font-size: calc($font-size-xxxl * 0.8);
+  }
+}
+@mixin title2 {
+  font-weight: $font-regular;
+  font-size: $font-size-xxl;
+  line-height: 132%;
+
+  @include tabletWidth {
+    font-size: calc($font-size-xxl * 0.8);
+  }
+}
+@mixin title3 {
+  font-weight: $font-regular;
+  font-size: $font-size-xl;
+  line-height: 132%;
+
+  @include tabletWidth {
+    font-size: calc($font-size-xl * 0.8);
+  }
+}
+@mixin title4 {
+  font-weight: $font-regular;
+  font-size: $font-size-l;
+  line-height: 132%;
+
+  @include tabletWidth {
+    font-size: calc($font-size-l * 0.8);
+  }
+}
+@mixin title5 {
+  font-weight: $font-regular;
+  font-size: $font-size-m;
+  line-height: 132%;
+}
+@mixin title6 {
+  font-weight: $font-regular;
+  font-size: $font-size-s;
+  line-height: 132%;
+}
+@mixin body1 {
+  font-weight: $font-regular;
+  font-size: $font-size-m;
+  line-height: 132%;
+}
+@mixin body2 {
+  font-weight: $font-regular;
+  font-size: $font-size-s;
+  line-height: 132%;
+}
+@mixin body3 {
+  font-weight: $font-regular;
+  font-size: $font-size-xs;
+  line-height: 132%;
+}
+@mixin caption {
+  font-weight: $font-regular;
+  font-size: $font-size-xxs;
+  line-height: 132%;
+}
+
+@mixin button {
+  font-weight: $font-medium;
+  font-size: $font-size-s;
+  line-height: 132%;
+  @include flex-center();
+
+  white-space: nowrap;
+  flex-wrap: nowrap;
+  word-break: keep-all;
+}
+
+@mixin eyebrow($size: $font-size-xxs) {
+  color: $color-gray-300;
+  letter-spacing: $letter-spacing-5;
+  font-size: $size;
+  font-weight: $font-bold;
+}
