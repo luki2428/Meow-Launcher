@@ -1,9 +1,6 @@
 @use 'styles/functions' as *;
 
-// Fonts
 $main-font: 'Segoe UI', sans-serif;
-
-// Font sizes - dopasowane do launchera (1rem = 10px)
 
 $font-size-xxxl: 3.6rem;
 $font-size-xxl: 3rem;
@@ -15,7 +12,6 @@ $font-size-xs: 1.2rem;
 $font-size-xxs: 1.1rem;
 $font-size-xxxs: 1rem;
 
-// Letter spacing
 $letter-spacing-1: -0.1rem;
 $letter-spacing-2: -0.025rem;
 $letter-spacing-3: 0rem;
@@ -23,7 +19,6 @@ $letter-spacing-4: 0.1rem;
 $letter-spacing-5: 0.15rem;
 $letter-spacing-6: 0.3rem;
 
-// Spacing
 $spacing-1: var(--spacing-1, 0.4rem);
 $spacing-2: var(--spacing-2, 0.8rem);
 $spacing-3: var(--spacing-3, 1.2rem);
@@ -43,7 +38,6 @@ $spacing-16: var(--spacing-16, 12rem);
 $spacing-17: var(--spacing-17, 14.4rem);
 $spacing-18: var(--spacing-18, 16.8rem);
 
-// Border radius
 $radius-xs: var(--radius-xs, 0.2rem);
 $radius-s: var(--radius-s, 0.4rem);
 $radius-m: var(--radius-m, 0.8rem);
@@ -51,7 +45,6 @@ $radius-l: var(--radius-l, 1.2rem);
 $radius-xl: var(--radius-xl, 1.6rem);
 $radius-xxl: var(--radius-xxl, 2rem);
 
-// Font weights
 $font-light: 300;
 $font-regular: 400;
 $font-medium: 500;
@@ -60,7 +53,6 @@ $font-bold: 700;
 $font-extraBold: 800;
 $font-black: 900;
 
-// Elements sizes
 $size-button-height-xs: 2.4rem;
 $size-button-height-s: 3.6rem;
 $size-button-height-m: 4.4rem;
@@ -79,7 +71,6 @@ $size-app-min-width: 64rem;
 $size-icon: 2.4rem;
 $size-icon-small: 1.8rem;
 
-// Elements spaces
 $space-gap-section: $spacing-6;
 $space-gap-cards: $spacing-3;
 $space-padding-button: $spacing-3 $spacing-5;
@@ -88,12 +79,8 @@ $space-padding-card: $spacing-5;
 $space-padding-page: $spacing-10;
 $space-padding-page-compact: $spacing-7;
 
-// Transitions
 $transition-duration-super-fast: 0.1s;
 $transition-duration-fast: 0.2s;
 $transition-duration-medium: 0.4s;
 $transition-main: $transition-duration-fast ease-in-out;
 $transition-smooth-end: $transition-duration-medium cubic-bezier(0.25, 0.4, 0.3, 1);
-
-// Reference:
-// spacing -> https://uxplanet.org/spacing-guide-for-designers-5bd140afe52a

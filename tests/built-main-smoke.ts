@@ -1,4 +1,3 @@
-// Exercise the actual electron-vite output, not a separately bundled copy of the services.
 import { app, dialog } from 'electron'
 import { createRequire } from 'node:module'
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -27,7 +26,6 @@ process.on('uncaughtException', finish)
 dialog.showErrorBox = (_title, message): void => finish(new Error(message))
 setTimeout(() => finish(new Error('Built Main did not become ready within 20 seconds')), 20_000)
 app.on('browser-window-created', (_event, window) => {
-  // The production window calls show on ready-to-show; keep this test hidden.
   window.show = (): void => {}
   window.webContents.once('did-finish-load', () => {
     void window.webContents
@@ -40,7 +38,7 @@ app.on('browser-window-created', (_event, window) => {
     }))()`
       )
       .then((result) => {
-          assert.equal(result.snapshot.version, app.getVersion())
+        assert.equal(result.snapshot.version, app.getVersion())
         assert.equal(result.accounts.ok, true)
         assert.equal(result.state.data.state, 'idle')
         assert.equal(result.nodeVisible, 'undefined')

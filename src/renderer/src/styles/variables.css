@@ -1,6 +1,5 @@
 :root {
   color-scheme: dark;
-  /* Colors */
   --color-green-100: #eefde8;
   --color-green-200: #ccffbb;
   --color-green-300: #b7f5a2;
@@ -34,7 +33,6 @@
   --color-white-900: #fafafa;
   --color-white-1000: #ffffff;
 
-  /* Szarości z zielonym odcieniem (tło i tekst launchera) */
   --color-gray-100: #edf4ef;
   --color-gray-200: #d4ddd6;
   --color-gray-300: #b7c6bc;
@@ -89,7 +87,6 @@
   --color-warning-background: #faf4e3;
   --color-warning-transparent: #f5d06140;
 
-  /* Spacing */
   --spacing-base: 0.8rem;
   --spacing-1: calc(var(--spacing-base) * 0.5);
   --spacing-2: calc(var(--spacing-base) * 1);
@@ -110,7 +107,6 @@
   --spacing-17: calc(var(--spacing-base) * 18);
   --spacing-18: calc(var(--spacing-base) * 21);
 
-  /* Radius */
   --radius-xs: 0.2rem;
   --radius-s: 0.4rem;
   --radius-m: 0.8rem;

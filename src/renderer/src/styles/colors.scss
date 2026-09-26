@@ -1,4 +1,3 @@
-// Basic colors
 $color-text: var(--color-text);
 $color-border: var(--color-border);
 $color-border-active: var(--color-border-active);
@@ -42,7 +41,6 @@ $color-warning-light: var(--color-warning-light);
 $color-warning-background: var(--color-warning-background);
 $color-warning-transparent: var(--color-warning-transparent);
 
-// Grayscale
 $color-gray-100: var(--color-gray-100);
 $color-gray-200: var(--color-gray-200);
 $color-gray-300: var(--color-gray-300);
@@ -90,7 +88,6 @@ $color-white-1000: var(--color-white-1000);
 $color-white: #fff;
 $color-black: #000;
 
-// Box shadows
 $shadow-main: rgba(0, 0, 0, 0.2) 0rem 0.4rem 2.2rem -0.5rem;
 $shadow-soft: rgba(0, 0, 0, 0.08) 0rem 0.2rem 1.2rem -0.3rem;
 $shadow-sharp: rgba(0, 0, 0, 0.24) 0rem 0.3rem 0.8rem;
@@ -99,24 +96,15 @@ $shadow-outline: rgba(0, 0, 0, 0.05) 0rem 0rem 0rem 0.1rem;
 $shadow-input-active: 0 0 0 0.1rem $color-primary-dark;
 $shadow-input-error: 0 0 0 0.1rem $color-danger-dark;
 
-// Borders
 $border-main: 0.1rem solid $color-border;
 $border-input-active: 0.1rem solid $color-primary-dark;
 $border-input-error: 0.1rem solid $color-danger-dark;
 
-// Outlines
 $outline-focus: 0.2rem solid $color-primary;
 
-// Gradients
 $gradient-hero: linear-gradient(120deg, $color-green-800, $color-background-2);
 
-// Filters
 $filter-white: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(201deg)
   brightness(106%) contrast(106%);
 $filter-black: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(7500%) hue-rotate(226deg)
   brightness(103%) contrast(108%);
-
-// References
-// mui palette -> https://mui.com/material-ui/customization/palette/
-// mui scale -> https://mui.com/material-ui/customization/color/
-// box shadows -> https://getcssscan.com/css-box-shadow-examples

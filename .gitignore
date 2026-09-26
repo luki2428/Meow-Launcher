@@ -1,10 +1,19 @@
+# Dependencies & build output
 node_modules
 dist
 out
-.DS_Store
+
+# Caches
 .eslintcache
-*.log*
-.env
-.env.local
 .npm-cache/
 .smoke/
+
+# Env & logs
+.env
+.env.local
+*.log*
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/

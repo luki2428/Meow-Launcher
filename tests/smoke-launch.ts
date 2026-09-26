@@ -1,4 +1,3 @@
-// Opt-in graphical smoke: launch the test instance, wait for texture atlases, stop our PID.
 import { readFile, stat } from 'node:fs/promises'
 import { resolve, join } from 'node:path'
 import log from 'electron-log/main'
@@ -38,21 +37,19 @@ async function main(): Promise<void> {
     for (let i = 0; i < 120; i++) {
       if (error) throw new Error(error)
       const file = join(game, 'logs/latest.log')
-      try {
-        if (
-          (await stat(file)).mtimeMs >= started &&
-          /Created: .*textures\/atlas/.test(await readFile(file, 'utf8'))
-        ) {
-          console.log(
-            'PASS: actual Minecraft process with',
-            version,
-            'initialized graphical texture atlases, with empty PATH; PID',
-            pid
-          )
-          return
-        }
-      } catch {
-        /* The game has not created a log yet. */
+      const fresh = await stat(file).then(
+        (info) => info.mtimeMs >= started,
+        () => false
+      )
+      const content = fresh ? await readFile(file, 'utf8').catch(() => '') : ''
+      if (/Created: .*textures\/atlas/.test(content)) {
+        console.log(
+          'PASS: actual Minecraft process with',
+          version,
+          'initialized graphical texture atlases, with empty PATH; PID',
+          pid
+        )
+        return
       }
       await new Promise((resolve) => setTimeout(resolve, 500))
     }

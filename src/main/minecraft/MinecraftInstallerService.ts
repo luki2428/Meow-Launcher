@@ -25,7 +25,6 @@ export class MinecraftInstallerService {
       libraryHost: (library) => {
         inside(game, 'libraries/' + library.download.path)
         const url = new URL(library.download.url)
-        // XMCL 6.1.2 still includes an HTTP Forge fallback; replace it explicitly.
         if (url.hostname === 'files.minecraftforge.net') {
           url.hostname = 'maven.minecraftforge.net'
           url.pathname = url.pathname.replace(/^\/maven\//, '/')
@@ -87,7 +86,6 @@ export class MinecraftInstallerService {
             'MINECRAFT_INSTALL_FAILED',
             'Nie znaleziono skonfigurowanej wersji Minecraft.'
           )
-        // Validate the download origin before handing the official manifest to XMCL.
         const remote = await fetchJson(meta.url, [
           'piston-meta.mojang.com',
           'launchermeta.mojang.com'
@@ -144,7 +142,7 @@ export class MinecraftInstallerService {
         await Version.parse(game, saved.id)
         id = saved.id
       } catch {
-        /* An incomplete installation is retried, never marked ready. */
+        id = undefined
       }
       if (!id) {
         switch (config.loader.type) {

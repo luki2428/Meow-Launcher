@@ -43,9 +43,8 @@
 }
 .hero {
   position: relative;
-  flex: 1;
+  flex: 1 0 auto;
   isolation: isolate;
-  min-height: 32rem;
   overflow: hidden;
   border: 1px solid #40384f;
   border-radius: 1.8rem;
@@ -341,9 +340,6 @@
 @media (max-height: 650px) {
   .info {
     padding: 1.4rem 0;
-  }
-  .hero {
-    min-height: 24rem;
   }
   .heroContent {
     padding: 2rem 2.8rem;

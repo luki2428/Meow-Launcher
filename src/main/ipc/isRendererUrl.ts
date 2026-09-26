@@ -1,4 +1,3 @@
-// Routing może zmieniać wyłącznie fragment. Ścieżka, query i origin muszą pozostać zaufane.
 export function isRendererUrl(candidate: string, rendererUrl: string): boolean {
   try {
     const actual = new URL(candidate)

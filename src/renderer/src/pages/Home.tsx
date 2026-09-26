@@ -69,29 +69,30 @@ export function Home({
         </div>
         <div className={style.heroContent}>
           <span className={style.badge}>
-            {snapshot.settings.developerMode
-              ? 'DEV · LOKALNY MANIFEST'
-              : 'NOWY ŚWIAT. NASZA SPOŁECZNOŚĆ.'}
+            {snapshot.settings.developerMode ? 'TRYB DEWELOPERSKI' : 'MEOW SERWER'}
           </span>
-          <h1>
-            Mały launcher.
-            <br />
-            Wielka <em>przygoda.</em>
-          </h1>
-          <p>
-            Twoje miejsce w naszym świecie Minecraft.
-            <br />
-            Jedna paczka, wspólny serwer i cała masa możliwości.
-          </p>
+          {snapshot.settings.developerMode ? (
+            <>
+              <h1>
+                Tryb <em>testowy.</em>
+              </h1>
+              <p>Lokalny manifest, osobny folder gry.</p>
+            </>
+          ) : (
+            <>
+              <h1>
+                Wbijaj na <em>serwer.</em>
+              </h1>
+              <p>Kliknij GRAJ, resztę zrobi launcher.</p>
+            </>
+          )}
         </div>
         <div className={style.heroFooter}>
           <span className={style.dot} />
           <span>{snapshot.edition.name}</span>
-          <span className={style.coming}>
-            {snapshot.settings.developerMode
-              ? 'OSOBNA INSTANCJA TESTOWA'
-              : 'PRZYGOTOWUJEMY COŚ DOBREGO'}
-          </span>
+          {snapshot.settings.developerMode && (
+            <span className={style.coming}>OSOBNA INSTANCJA</span>
+          )}
         </div>
       </section>
       <section className={style.actionBar} aria-label="Uruchamianie gry">
@@ -111,7 +112,7 @@ export function Home({
                 (busy
                   ? game.progress?.message || 'Przygotowywanie gry…'
                   : !snapshot.account
-                    ? 'Wybierz konto, aby rozpocząć.'
+                    ? 'Zaloguj się, aby rozpocząć.'
                     : snapshot.edition.playEnabled
                       ? 'Gotowy do gry'
                       : snapshot.edition.message)}

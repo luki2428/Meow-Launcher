@@ -40,7 +40,6 @@ export async function trustedFetch(
 }
 export async function fetchJson(url: string, hosts: readonly string[]): Promise<unknown> {
   const response = await trustedFetch(url, hosts, AbortSignal.timeout(30_000))
-  // Bound metadata independently of the untrusted Content-Length header.
   const chunks: Uint8Array[] = []
   let size = 0
   for await (const chunk of response.body!) {

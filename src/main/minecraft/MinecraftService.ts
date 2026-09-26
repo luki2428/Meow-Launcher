@@ -68,7 +68,6 @@ export class MinecraftService {
       await this.installer.ensureMinecraftInstalled(config, game, java, this.report)
       this.stage('installing-loader', 'loader', 'Sprawdzanie loadera…')
       const version = await this.installer.ensureLoaderInstalled(config, game, java, this.report)
-      // Installation can outlive a token or the user can log out while it is running.
       const session = await this.auth.getValidMinecraftSession(options.accountId)
       this.stage('launching', 'launching', 'Uruchamianie Minecraft…')
       log.info('Minecraft: launch')

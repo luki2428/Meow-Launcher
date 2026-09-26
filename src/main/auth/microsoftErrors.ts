@@ -23,7 +23,6 @@ export async function inStage<T>(stage: MicrosoftAuthStage, action: () => Promis
   }
 }
 
-// Xbox XSTS error codes: https://wiki.vg/Microsoft_Authentication_Scheme#Authenticate_with_XSTS
 const xstsErrors: Record<number, [string, string]> = {
   2148916227: ['MICROSOFT_XBOX_BANNED', 'Konto Xbox zostało zablokowane.'],
   2148916229: [
@@ -57,7 +56,6 @@ const misconfigured = (): LauncherError =>
     'Aplikacja Microsoft launchera jest nieprawidłowo skonfigurowana. Szczegóły w logu launchera.'
   )
 
-/** Only fields known to be free of tokens and personal data. */
 function describe(error: unknown): string {
   const parts: string[] = []
   if (error instanceof Error) parts.push(error.name)

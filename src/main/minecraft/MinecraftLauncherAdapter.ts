@@ -47,7 +47,6 @@ export class MinecraftLauncherAdapter {
           shell: false,
           windowsHide: true
         })
-        // Attach error/exit handlers synchronously, before returning the child to XMCL.
         this.processes.monitor(child, [session.accessToken], update)
         spawned = new Promise<void>((resolve, reject) => {
           child.once('spawn', resolve)

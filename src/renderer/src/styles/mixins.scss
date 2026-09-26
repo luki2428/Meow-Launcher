@@ -129,7 +129,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: $line-s-amount; /* number of lines to show */
+  -webkit-line-clamp: $line-s-amount;
   -webkit-box-orient: vertical;
 }
 

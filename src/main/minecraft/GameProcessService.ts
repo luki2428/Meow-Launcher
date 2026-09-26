@@ -3,7 +3,6 @@ import { StringDecoder } from 'node:string_decoder'
 import log from 'electron-log/main'
 import type { GameSnapshot } from '../../shared/game'
 
-// Buffer complete lines so a token split across stdout chunks cannot escape redaction.
 export function redactLine(line: string, secrets: string[]): string {
   let safe = line
   for (const secret of secrets) if (secret.length > 1) safe = safe.split(secret).join('[REDACTED]')

@@ -19,7 +19,6 @@ export class InstanceService {
     return join(this.root(id), 'game')
   }
   async load(id: string): Promise<InstanceConfig> {
-    // Resolve the selected source before any installation or network request.
     const localConfig = this.localSource?.enabled ? this.localSource.config() : undefined
     const root = this.root(id)
     await this.assertNoLinks(join(root, 'instance.json'))

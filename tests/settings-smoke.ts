@@ -77,7 +77,6 @@ void app
       assert.equal(denied.error.code, 'GAME_BUSY')
     }
     launcher.minecraft.getState = getState
-    // Open a fresh renderer so its snapshot contains the saved values.
     await new Promise<void>((resolve) => {
       window.webContents.once('did-finish-load', () => resolve())
       window.reload()

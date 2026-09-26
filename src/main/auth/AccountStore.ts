@@ -45,7 +45,6 @@ export class AccountStore {
     }
   }
   removeAccount(id: string): void {
-    // Remove credentials first: even if metadata write fails the session is revoked locally.
     const sessions = { ...this.secrets.get('sessions') }
     delete sessions[id]
     this.secrets.set('sessions', sessions)

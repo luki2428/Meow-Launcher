@@ -1,6 +1,5 @@
 @use 'styles' as *;
 
-// Style treści przez :where(), żeby moduły korzystające z Card mogły je łatwo nadpisać.
 .card {
   background: $color-background-1;
   border: $border-main;

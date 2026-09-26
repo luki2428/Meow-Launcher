@@ -1,6 +1,5 @@
 @use 'styles/colors' as *;
 
-// Default
 html,
 body,
 div,
@@ -87,19 +86,16 @@ video {
   vertical-align: baseline;
 }
 
-// Links
 a {
   text-decoration: none;
 }
 
-// List
 ul,
 li {
   margin: 0;
   padding: 0;
 }
 
-// Default
 html {
   box-sizing: border-box;
 }
@@ -129,9 +125,8 @@ iframe {
   border: 0;
 }
 
-// From
 textarea {
-  resize: none; /*remove the resize handle on the bottom right*/
+  resize: none;
   overflow: auto;
   vertical-align: top;
   box-shadow: none;
@@ -150,7 +145,6 @@ input {
   line-height: normal;
 }
 
-// Table
 table {
   border-collapse: collapse;
   border-spacing: 0;
@@ -161,7 +155,6 @@ th {
   text-align: left;
 }
 
-// Sup
 sup {
   vertical-align: super;
 }

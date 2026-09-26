@@ -63,14 +63,12 @@ function App(): React.JSX.Element {
               {snapshot?.account?.username.slice(0, 2).toUpperCase() ?? '?'}
             </span>
             <span>
-              <strong>{snapshot?.account?.username ?? 'Wybierz konto'}</strong>
-              <small>
-                {snapshot?.account
-                  ? snapshot.account.type === 'microsoft'
-                    ? 'Konto Microsoft'
-                    : 'Nonpremium'
-                  : 'Twoja przygoda, Twój nick'}
-              </small>
+              <strong>{snapshot?.account?.username ?? 'Zaloguj się'}</strong>
+              {snapshot?.account && (
+                <small>
+                  {snapshot.account.type === 'microsoft' ? 'Konto Microsoft' : 'Nonpremium'}
+                </small>
+              )}
             </span>
             <span aria-hidden="true">⌄</span>
           </button>

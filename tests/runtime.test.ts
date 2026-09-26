@@ -87,7 +87,6 @@ test('corrupted Java installation never becomes ready and never falls back to PA
 test('account metadata survives restart, encrypted session is removed on logout', async (t) => {
   const directory = fixture(t)
   let blobs: Record<string, string> = {}
-  // Test double for an OS keystore, not a production encryption implementation.
   const vault = new Map<string, string>()
   let available = true
   const encryption = {

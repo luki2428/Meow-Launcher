@@ -1,4 +1,3 @@
-// Explicit opt-in integration test: downloads Java/Minecraft into .smoke only.
 import { resolve, join } from 'node:path'
 import { stat } from 'node:fs/promises'
 import { InstanceService } from '../src/main/minecraft/InstanceService'
@@ -27,7 +26,6 @@ async function main(): Promise<void> {
       last = Date.now()
     }
   }
-  // A deliberately empty PATH and JAVA_HOME prove that no system Java is used.
   process.env.PATH = ''
   delete process.env.JAVA_HOME
   const java = await javaService.ensureRuntime(config, report)
@@ -102,7 +100,6 @@ async function main(): Promise<void> {
 }
 void main().catch((error) => {
   console.error(safeError(error))
-  // Installer-only test; no credentials are present in this process.
   if (error instanceof Error) console.error(error.cause)
   process.exitCode = 1
 })

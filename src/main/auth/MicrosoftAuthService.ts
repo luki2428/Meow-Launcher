@@ -107,7 +107,6 @@ export class MicrosoftAuthService {
       const identity = await client.getTokenCache().getAccountByHomeId(saved.homeAccountId)
       if (!identity) throw new InteractionRequiredAuthError('missing_account', 'Login required')
       const token = await client.acquireTokenSilent({ account: identity, scopes })
-      // Persist rotated refresh tokens before a subsequent network operation can fail.
       this.store.writeSession(
         account.id,
         JSON.stringify({ ...saved, cache: client.getTokenCache().serialize() })
@@ -154,7 +153,6 @@ export class MicrosoftAuthService {
         .object({ access_token: z.string().min(1), expires_in: z.number().positive() })
         .parse(await auth.loginMinecraftWithXBox(xsts.DisplayClaims.xui[0].uhs, xsts.Token, signal))
     )
-    // The authenticated Java profile endpoint is authoritative for Java access (including Game Pass).
     const profile = await inStage('profile', async () => {
       try {
         return z
@@ -178,6 +176,5 @@ export class MicrosoftAuthService {
 }
 
 function resultPage(message: string): string {
-  // The MSAL loopback server does not send a charset, so declare it in the document.
   return `<!doctype html><html lang="pl"><head><meta charset="utf-8"><title>Meow Launcher</title></head><body style="font-family:system-ui,sans-serif;background:#1c1b22;color:#eee;display:grid;place-items:center;height:100vh;margin:0"><p>${message}</p></body></html>`
 }

@@ -24,7 +24,6 @@ export const developerManifestSchema = z
   })
   .strict()
 
-// Local-only source. Never fall back to a remote manifest if this one is invalid.
 export class DeveloperPackService {
   constructor(private readonly settings: SettingsService) {}
 

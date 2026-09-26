@@ -33,8 +33,6 @@ function prepare(options: DownloadOptions, game: string): void {
   }
   const urls = typeof options.url === 'string' ? [options.url] : options.url
   for (const url of urls) trustedUrl(url, hosts)
-  // XMCL 6.1.2 exposes protected DownloadOptions, but no global pending-file option.
-  // This version-pinned adapter is the only place touching that protected API.
   options.pendingFile = destination + '.tmp'
   try {
     if (lstatSync(options.pendingFile).isSymbolicLink()) throw new Error('Pending target is a link')
@@ -92,8 +90,6 @@ export async function runXmclTask<T>(
         }
       })
     } catch (error) {
-      // XMCL's dependency group uses Promise.all: a failed sibling does not stop
-      // outstanding writes. Drain them before retrying the same temporary paths.
       await Promise.allSettled([...children].map((child) => child.wait()))
       if (attempt === 2 || timedOut || task.isCancelled) throw error
     } finally {

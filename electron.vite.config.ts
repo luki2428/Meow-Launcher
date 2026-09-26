@@ -7,7 +7,6 @@ export default defineConfig(({ mode }) => ({
   main: {
     build: {
       rollupOptions: {
-        // Main is CommonJS; ESM-only externals (electron-store, p-limit) expose .default.
         output: { interop: 'auto' }
       }
     },

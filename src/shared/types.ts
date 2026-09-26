@@ -1,4 +1,3 @@
-// Publiczne dane IPC. Nigdy nie dodawaj tutaj tokenów ani API systemowych.
 export interface LauncherSettings {
   ram: number
   installationDirectory: string
