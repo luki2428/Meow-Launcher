@@ -50,6 +50,10 @@ export function registerServiceHandlers(
     z.tuple([]).parse(args)
     return launcher.minecraft.getState()
   })
+  handle(IPC.minecraftCancelModpack, (...args) => {
+    z.tuple([]).parse(args)
+    return launcher.minecraft.cancelModpackUpdate()
+  })
   const onState = (state: GameSnapshot): void => {
     if (!window.isDestroyed()) window.webContents.send(IPC.minecraftProgress, state)
   }

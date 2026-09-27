@@ -38,8 +38,16 @@ export async function trustedFetch(
   }
   throw new LauncherError('DOWNLOAD_FAILED', 'Zbyt wiele przekierowań pobierania.')
 }
-export async function fetchJson(url: string, hosts: readonly string[]): Promise<unknown> {
-  const response = await trustedFetch(url, hosts, AbortSignal.timeout(30_000))
+export async function fetchJson(
+  url: string,
+  hosts: readonly string[],
+  signal?: AbortSignal
+): Promise<unknown> {
+  const response = await trustedFetch(
+    url,
+    hosts,
+    AbortSignal.any([AbortSignal.timeout(30_000), ...(signal ? [signal] : [])])
+  )
   const chunks: Uint8Array[] = []
   let size = 0
   for await (const chunk of response.body!) {
@@ -54,24 +62,38 @@ export async function downloadVerified(
   hosts: readonly string[],
   destination: string,
   checksum: string,
-  size: number,
-  progress: (percent: number) => void
+  size: number | undefined,
+  progress: (percent: number, bytesPerSecond: number) => void,
+  signal?: AbortSignal
 ): Promise<void> {
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const response = await trustedFetch(url, hosts, AbortSignal.timeout(600_000))
+      signal?.throwIfAborted()
+      const response = await trustedFetch(
+        url,
+        hosts,
+        AbortSignal.any([AbortSignal.timeout(600_000), ...(signal ? [signal] : [])])
+      )
       const file = await open(destination + '.tmp', 'w')
       try {
         const hash = createHash('sha256')
         let received = 0
+        const started = Date.now()
         for await (const chunk of response.body!) {
           received += chunk.length
-          if (received > size) throw new Error('Download exceeds expected size')
+          signal?.throwIfAborted()
+          if (received > (size ?? 2 * 1024 ** 3)) throw new Error('Download exceeds expected size')
           hash.update(chunk)
           await file.writeFile(chunk)
-          progress(Math.floor((received / size) * 100))
+          progress(
+            size ? Math.floor((received / size) * 100) : 0,
+            Math.round(received / Math.max(0.001, (Date.now() - started) / 1000))
+          )
         }
-        if (received !== size || hash.digest('hex') !== checksum.toLowerCase())
+        if (
+          (size !== undefined && received !== size) ||
+          hash.digest('hex') !== checksum.toLowerCase()
+        )
           throw new LauncherError(
             'CHECKSUM_MISMATCH',
             'Pobrany plik ma niepoprawną sumę SHA-256 lub rozmiar.'
@@ -83,6 +105,7 @@ export async function downloadVerified(
       return
     } catch (error) {
       await rm(destination + '.tmp', { force: true })
+      signal?.throwIfAborted()
       if (attempt === 2) throw error
     }
   }

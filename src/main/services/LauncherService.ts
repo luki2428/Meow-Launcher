@@ -3,6 +3,7 @@ import type { SettingsService } from './SettingsService'
 import type { AuthService } from '../auth/AuthService'
 import type { MinecraftService } from '../minecraft/MinecraftService'
 import type { DeveloperPackService } from './DeveloperPackService'
+import type { ModpackService } from '../modpack/ModpackService'
 
 export class LauncherService {
   constructor(
@@ -10,10 +11,14 @@ export class LauncherService {
     readonly settings: SettingsService,
     readonly auth: AuthService,
     readonly minecraft: MinecraftService,
-    readonly developer: DeveloperPackService
+    readonly developer: DeveloperPackService,
+    private readonly modpack: ModpackService
   ) {}
 
-  getSnapshot(): LauncherSnapshot {
+  async getSnapshot(): Promise<LauncherSnapshot> {
+    const modpackVersion = this.developer.enabled
+      ? 'local-dev'
+      : await this.modpack.installedVersion()
     return {
       version: this.version,
       settings: this.settings.getSettings(),
@@ -28,7 +33,7 @@ export class LauncherService {
           ? 'Tryb deweloperski: lokalny manifest, osobny folder gry. Kliknij GRAJ, aby przygotować Minecrafta.'
           : 'Java i pliki gry zostaną przygotowane automatycznie. Wybierz konto i kliknij GRAJ.'
       },
-      modpackVersion: this.developer.enabled ? 'local-dev' : null,
+      modpackVersion,
       account:
         this.settings
           .getSettings()

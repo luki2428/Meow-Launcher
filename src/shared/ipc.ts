@@ -7,6 +7,7 @@ export const IPC = {
   authSelect: 'auth:select',
   minecraftLaunch: 'minecraft:launch',
   minecraftState: 'minecraft:state',
+  minecraftCancelModpack: 'minecraft:cancel-modpack',
   minecraftProgress: 'minecraft:progress',
   getSnapshot: 'launcher:get-snapshot',
   setRam: 'launcher:set-ram',

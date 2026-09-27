@@ -44,6 +44,7 @@ Zamiast uniwersalnej platformy pokroju Prism Launchera: jeden przycisk **GRAJ**,
 - ✅ **Weryfikacja plików** — pobieranie do `.tmp`, sumy kontrolne, timeout i retry.
 - ⚙️ **Ustawienia** — RAM dopasowany do pamięci komputera, rozmiar okna / pełny ekran, folder instalacji.
 - 📊 **Postęp na żywo** — stan instalacji i procesu gry przesyłany z Main do UI.
+- 📦 **Aktualizacja paczki przed grą** — manifest HTTPS, pobieranie brakujących / zmienionych plików, SHA-256, ochrona lokalnych konfiguracji, postęp i anulowanie pobierania.
 - 📝 **Logi** — logi launchera i filtrowany strumień gry, bez tokenów i danych logowania.
 
 <details>
@@ -150,6 +151,40 @@ Folder instalacji można zmienić w **Ustawienia → Pliki gry**. Launcher nie n
 
 `loader.type`: `vanilla` · `fabric` · `forge` · `neoforge`. Wersje gry, Javy i loadera muszą być ze sobą zgodne. Walidacja Zod odrzuca nieznane pola, ścieżki do plików wykonywalnych i dowolne argumenty JVM.
 
+### Aktualizacje modpacka
+
+W `instances/main/instance.json` w wybranym folderze instalacji dodaj `modpack` według [przykładu konfiguracji](examples/online-instance.json):
+
+```json
+"modpack": {
+  "manifestUrl": "https://example.com/modpack/manifest.json",
+  "allowedHosts": ["example.com"]
+}
+```
+
+Zastąp przykładowy URL adresem swojego manifestu. `allowedHosts` to jawna lista dozwolonych hostów manifestu, plików i wszystkich przekierowań; dopisz tam używane CDN. Lista jest lokalną konfiguracją administratora paczki, a nie częścią zdalnego manifestu. Bez `modpack` działa dotychczasowa instalacja Minecrafta. Tryb deweloperski nadal korzysta z osobnej lokalnej paczki.
+
+Opublikuj [manifest](examples/online.manifest.json) przez HTTPS. W `files` dodaj wpis dla każdego zarządzanego pliku:
+
+```json
+{
+  "path": "mods/example.jar",
+  "url": "https://example.com/modpack/example.jar",
+  "sha256": "pełny SHA-256 pliku: 64 znaki szesnastkowe",
+  "size": 123456
+}
+```
+
+`size` jest opcjonalny; SHA-256 obowiązkowy. Sumę można wyliczyć w PowerShell przez `Get-FileHash -Algorithm SHA256 .\example.jar`. Publikuj nowe pliki pod niezmiennymi adresami, a manifest aktualizuj na końcu. Pobieranie musi respektować licencje i źródła modów.
+
+Każde kliknięcie **GRAJ** pobiera świeży manifest, porównuje wersję i sprawdza lokalne SHA-256, również gdy numer wersji się nie zmienił. Brakujące lub uszkodzone pliki są pobierane ponownie. Wersje Minecrafta i loadera pochodzą z manifestu; opcjonalne `java` nadpisuje wymaganie Javy z konfiguracji instancji.
+
+Obsługiwane katalogi paczki: `mods/`, `config/`, `defaultconfigs/`, `kubejs/`. Launcher usuwa wyłącznie pliki zapisane wcześniej jako zarządzane. Lokalne zmiany w katalogach konfiguracyjnych i istniejące konfiguracje użytkownika są zachowywane; niezmienione domyślne pliki mogą być aktualizowane. `saves/`, `screenshots/`, `resourcepacks/`, `shaderpacks/`, `options.txt` i `servers.dat` nie są zarządzane manifestem. Własne mody o innych ścieżkach pozostają nietknięte.
+
+Pobieranie używa timeoutu, trzech prób i plików tymczasowych. Wszystkie pobrania kończą się weryfikacją przed rozpoczęciem podmiany plików gry. **Anuluj** działa podczas sprawdzania i pobierania; końcowa podmiana jest nieprzerywalna z UI. Błąd lub brak połączenia blokuje start gry. Po awarii podczas podmiany ponowne **GRAJ** naprawia stan (może wymagać ponownego pobrania); nie jest to automatyczny rollback całej paczki.
+
+Stan i wersja są zapisywane atomowo w `instances/main/modpack-state.json`, a pobrania w sąsiednim `modpack-staging/`. Nie usuwaj pliku stanu — służy do identyfikacji zarządzanych plików i odzyskiwania po przerwanym zapisie. Wersja pojawia się na ekranie głównym po udanej synchronizacji. Zmienione lokalnie konfiguracje mogą wymagać ręcznego dostosowania do nowych wersji modów.
+
 ## 🏗️ Architektura
 
 Klasyczny podział Electron — logika systemowa w Main, React wyłącznie jako UI.
@@ -246,7 +281,7 @@ Potwierdzona instalacja: Minecraft 1.21.1, Fabric 0.19.5, NeoForge 21.1.251, For
 - [x] Logowanie Microsoft
 - [ ] Konfiguracja online i status edycji
 - [ ] Status serwera (Server List Ping)
-- [ ] Synchronizacja modpacka z manifestu (SHA-256, usuwanie starych plików)
+- [x] Synchronizacja modpacka z manifestu (SHA-256, usuwanie starych plików, anulowanie pobierania paczki)
 - [ ] Anulowanie instalacji
 - [ ] Auto-update launchera i podpisany instalator
 - [ ] Changelog i newsy

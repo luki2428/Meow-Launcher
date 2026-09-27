@@ -10,11 +10,13 @@ import type { MinecraftLauncherAdapter } from './MinecraftLauncherAdapter'
 import type { GameProcessService } from './GameProcessService'
 import { launchSchema } from '../shared/validation'
 import { LauncherError, safeError } from '../shared/LauncherError'
+import type { ModpackService } from '../modpack/ModpackService'
 
 export class MinecraftService {
   readonly events = new EventEmitter()
   private snapshot: GameSnapshot = { state: 'idle' }
   private preparing = false
+  private modpackAbort?: AbortController
   constructor(
     private readonly instances: InstanceService,
     private readonly auth: Pick<AuthService, 'getValidMinecraftSession'>,
@@ -24,10 +26,19 @@ export class MinecraftService {
       'ensureMinecraftInstalled' | 'ensureLoaderInstalled'
     >,
     private readonly adapter: Pick<MinecraftLauncherAdapter, 'launch'>,
-    private readonly processes: Pick<GameProcessService, 'running'>
+    private readonly processes: Pick<GameProcessService, 'running'>,
+    private readonly modpack?: Pick<ModpackService, 'check' | 'synchronize'>
   ) {}
   getState(): GameSnapshot {
     return structuredClone(this.snapshot)
+  }
+  cancelModpackUpdate(): void {
+    // Committing verified files is short and must finish before accepting cancellation.
+    if (
+      this.snapshot.state === 'updating-modpack' &&
+      this.snapshot.progress?.stage !== 'installing'
+    )
+      this.modpackAbort?.abort()
   }
   private update = (state: GameSnapshot): void => {
     this.snapshot = state
@@ -53,7 +64,7 @@ export class MinecraftService {
     this.preparing = true
     try {
       this.stage('preparing', 'checking', 'Sprawdzanie instancji…')
-      const config = await this.instances.load(options.instanceId)
+      let config = await this.instances.load(options.instanceId)
       if (!config.playEnabled)
         throw new LauncherError(
           'PLAY_DISABLED',
@@ -61,6 +72,28 @@ export class MinecraftService {
         )
       this.stage('preparing', 'auth', 'Sprawdzanie sesji konta…')
       await this.auth.getValidMinecraftSession(options.accountId)
+      if (config.modpack && this.modpack) {
+        this.stage('updating-modpack', 'checking', 'Sprawdzanie aktualizacji paczki…')
+        this.modpackAbort = new AbortController()
+        try {
+          const manifest = await this.modpack.check(config, this.report, this.modpackAbort.signal)
+          if (manifest) {
+            await this.modpack.synchronize(config, manifest, this.report, this.modpackAbort.signal)
+            config = {
+              ...config,
+              minecraft: manifest.minecraft,
+              loader: manifest.loader,
+              java: manifest.java ?? config.java
+            }
+          }
+        } catch (error) {
+          if (this.modpackAbort.signal.aborted)
+            throw new LauncherError('MODPACK_CANCELLED', 'Aktualizacja paczki została anulowana.')
+          throw error
+        } finally {
+          this.modpackAbort = undefined
+        }
+      }
       this.stage('installing-java', 'java', 'Sprawdzanie Java Runtime…')
       const java = await this.java.ensureRuntime(config, this.report)
       const game = this.instances.game(config.id)

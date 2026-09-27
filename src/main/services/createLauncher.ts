@@ -13,6 +13,7 @@ import { GameProcessService } from '../minecraft/GameProcessService'
 import { MinecraftLauncherAdapter } from '../minecraft/MinecraftLauncherAdapter'
 import { MinecraftService } from '../minecraft/MinecraftService'
 import { DeveloperPackService } from './DeveloperPackService'
+import { ModpackService } from '../modpack/ModpackService'
 
 export function createLauncher(): LauncherService {
   const directory = app.getPath('userData')
@@ -40,13 +41,15 @@ export function createLauncher(): LauncherService {
   )
   const java = new JavaService(instances, new JavaRuntimeInstaller())
   const processes = new GameProcessService()
+  const modpack = new ModpackService(instances)
   const minecraft = new MinecraftService(
     instances,
     auth,
     java,
     new MinecraftInstallerService(),
     new MinecraftLauncherAdapter(processes, () => settings.getSettings()),
-    processes
+    processes,
+    modpack
   )
-  return new LauncherService(app.getVersion(), settings, auth, minecraft, developer)
+  return new LauncherService(app.getVersion(), settings, auth, minecraft, developer, modpack)
 }

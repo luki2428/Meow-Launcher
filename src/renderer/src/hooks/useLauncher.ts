@@ -37,6 +37,16 @@ export function useLauncher(): {
     }
   }, [])
 
+  useEffect(() => {
+    let previous = ''
+    return window.launcher.minecraft.onProgress((game) => {
+      if (game.state !== previous) {
+        previous = game.state
+        void reload()
+      }
+    })
+  }, [reload])
+
   const updateSettings = async (
     action: () => Promise<Result<LauncherSettings>>
   ): Promise<Result<LauncherSettings>> => {
@@ -56,6 +66,7 @@ export function useLauncher(): {
               }
             : previous
         )
+        await reload()
       }
       return result
     } catch {

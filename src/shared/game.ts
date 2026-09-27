@@ -6,6 +6,7 @@ export type GameState =
   | 'installing-java'
   | 'installing-minecraft'
   | 'installing-loader'
+  | 'updating-modpack'
   | 'launching'
   | 'running'
   | 'stopped'
@@ -25,6 +26,7 @@ export interface LauncherProgress {
   progress?: number
   message: string
   currentFile?: string
+  bytesPerSecond?: number
 }
 export interface GameSnapshot {
   state: GameState
@@ -51,5 +53,6 @@ export interface AuthAPI {
 export interface MinecraftAPI {
   launch(options: LaunchOptions): Promise<Result<void>>
   getState(): Promise<Result<GameSnapshot>>
+  cancelModpackUpdate(): Promise<Result<void>>
   onProgress(callback: (snapshot: GameSnapshot) => void): () => void
 }

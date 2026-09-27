@@ -24,7 +24,17 @@ export const instanceSchema = z
       z.object({ type: z.literal('vanilla') }).strict(),
       z.object({ type: z.enum(['fabric', 'forge', 'neoforge']), version: versionSchema }).strict()
     ]),
-    playEnabled: z.boolean().default(true)
+    playEnabled: z.boolean().default(true),
+    modpack: z
+      .object({
+        manifestUrl: z.string().url().max(2048),
+        allowedHosts: z
+          .array(z.string().regex(/^[a-z0-9.-]+$/))
+          .min(1)
+          .max(32)
+      })
+      .strict()
+      .optional()
   })
   .strict()
 export type InstanceConfig = z.infer<typeof instanceSchema>

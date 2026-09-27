@@ -1,0 +1,11 @@
+{
+  "id": "main",
+  "minecraft": "1.21.1",
+  "java": { "majorVersion": 21, "architecture": "x64" },
+  "loader": { "type": "neoforge", "version": "21.1.172" },
+  "playEnabled": true,
+  "modpack": {
+    "manifestUrl": "https://example.com/modpack/manifest.json",
+    "allowedHosts": ["example.com"]
+  }
+}

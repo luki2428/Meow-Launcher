@@ -416,6 +416,10 @@
 .play:hover:not(:disabled) {
   background: #c4a7fc;
 }
+.settings.cancel {
+  width: auto;
+  padding: 0 1rem;
+}
 .play:focus-visible,
 .settings:focus-visible {
   outline: 2px solid #d5befd;

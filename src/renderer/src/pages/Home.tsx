@@ -117,6 +117,9 @@ export function Home({
                       ? 'Gotowy do gry'
                       : snapshot.edition.message)}
             </p>
+            {busy && game.progress?.bytesPerSecond !== undefined && (
+              <span>{(game.progress.bytesPerSecond / 1024 ** 2).toFixed(1)} MB/s</span>
+            )}
             {game.progress?.progress !== undefined && busy && (
               <div className={style.progressRow}>
                 <progress
@@ -134,6 +137,21 @@ export function Home({
           </div>
         </div>
         <div className={style.actions}>
+          {game.state === 'updating-modpack' && game.progress?.stage !== 'installing' && (
+            <button
+              className={`${style.settings} ${style.cancel}`}
+              onClick={() => {
+                void window.launcher.minecraft
+                  .cancelModpackUpdate()
+                  .then((result) => {
+                    if (!result.ok) setError(result.error.message)
+                  })
+                  .catch(() => setError('Nie udało się anulować aktualizacji.'))
+              }}
+            >
+              Anuluj
+            </button>
+          )}
           <button
             className={style.settings}
             onClick={onSettings}
