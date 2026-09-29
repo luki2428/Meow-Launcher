@@ -54,6 +54,7 @@ export interface AuthAPI {
 export interface MinecraftAPI {
   launch(options: LaunchOptions): Promise<Result<void>>
   getState(): Promise<Result<GameSnapshot>>
+  cancelInstallation(): Promise<Result<void>>
   cancelModpackUpdate(): Promise<Result<void>>
   onProgress(callback: (snapshot: GameSnapshot) => void): () => void
 }

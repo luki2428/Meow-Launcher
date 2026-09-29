@@ -46,15 +46,17 @@ export class MinecraftInstallerService {
     factory: () => Task<T>,
     stage: LauncherProgress['stage'],
     report: (progress: LauncherProgress) => void,
-    game: string
+    game: string,
+    signal?: AbortSignal
   ): Promise<T> {
-    return runXmclTask(factory, game, stage, report)
+    return runXmclTask(factory, game, stage, report, signal)
   }
   async ensureMinecraftInstalled(
     config: InstanceConfig,
     game: string,
     java: string,
-    report: (progress: LauncherProgress) => void
+    report: (progress: LauncherProgress) => void,
+    signal?: AbortSignal
   ): Promise<ResolvedVersion> {
     log.info('Minecraft: check/install', config.minecraft)
     try {
@@ -75,10 +77,11 @@ export class MinecraftInstallerService {
             versions: z.array(z.object({ id: z.string().max(200), url: z.string().url() }))
           })
           .parse(
-            await fetchJson('https://launchermeta.mojang.com/mc/game/version_manifest.json', [
-              'launchermeta.mojang.com',
-              'piston-meta.mojang.com'
-            ])
+            await fetchJson(
+              'https://launchermeta.mojang.com/mc/game/version_manifest.json',
+              ['launchermeta.mojang.com', 'piston-meta.mojang.com'],
+              signal
+            )
           )
         const meta = manifest.versions.find((v) => v.id === config.minecraft)
         if (!meta)
@@ -86,10 +89,11 @@ export class MinecraftInstallerService {
             'MINECRAFT_INSTALL_FAILED',
             'Nie znaleziono skonfigurowanej wersji Minecraft.'
           )
-        const remote = await fetchJson(meta.url, [
-          'piston-meta.mojang.com',
-          'launchermeta.mojang.com'
-        ])
+        const remote = await fetchJson(
+          meta.url,
+          ['piston-meta.mojang.com', 'launchermeta.mojang.com'],
+          signal
+        )
         z.object({
           id: z.literal(config.minecraft),
           mainClass: z.string(),
@@ -102,14 +106,21 @@ export class MinecraftInstallerService {
             })
           })
         }).parse(remote)
-        version = await this.run(() => installVersionTask(meta, game), 'minecraft', report, game)
+        version = await this.run(
+          () => installVersionTask(meta, game),
+          'minecraft',
+          report,
+          game,
+          signal
+        )
       }
       const installed = version
       version = await this.run(
         () => installDependenciesTask(installed, this.libraryOptions(game)),
         'minecraft',
         report,
-        game
+        game,
+        signal
       )
       return version
     } catch (error) {
@@ -126,7 +137,8 @@ export class MinecraftInstallerService {
     config: InstanceConfig,
     game: string,
     java: string,
-    report: (progress: LauncherProgress) => void
+    report: (progress: LauncherProgress) => void,
+    signal?: AbortSignal
   ): Promise<string> {
     if (config.loader.type === 'vanilla') return config.minecraft
     log.info('Loader: check/install', config.loader.type, config.loader.version)
@@ -151,7 +163,7 @@ export class MinecraftInstallerService {
               minecraft: game,
               minecraftVersion: config.minecraft,
               version: config.loader.version,
-              signal: AbortSignal.timeout(60_000)
+              signal: AbortSignal.any([AbortSignal.timeout(60_000), ...(signal ? [signal] : [])])
             })
             break
           case 'forge':
@@ -164,7 +176,8 @@ export class MinecraftInstallerService {
                 }),
               'loader',
               report,
-              game
+              game,
+              signal
             )
             break
           case 'neoforge':
@@ -177,7 +190,8 @@ export class MinecraftInstallerService {
                 }),
               'loader',
               report,
-              game
+              game,
+              signal
             )
             break
         }
@@ -188,8 +202,10 @@ export class MinecraftInstallerService {
         () => installDependenciesTask(version, this.libraryOptions(game)),
         'loader',
         report,
-        game
+        game,
+        signal
       )
+      signal?.throwIfAborted()
       await writeFile(marker + '.tmp', JSON.stringify({ fingerprint, id }))
       await rename(marker + '.tmp', marker)
       return id

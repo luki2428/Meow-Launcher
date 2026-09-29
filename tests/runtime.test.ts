@@ -226,6 +226,59 @@ test('launch orchestration locks preparation and uses managed Java; failure allo
   assert.equal(service.getState().state, 'running')
 })
 
+for (const cancelAt of ['java', 'minecraft', 'loader']) {
+  test(`cancelling ${cancelAt} prevents game launch and permits a new attempt`, async (t) => {
+    const instances = new InstanceService(fixture(t))
+    const account = createOfflineAccount('Steve')
+    let cancel = true
+    let launched = 0
+    const checkpoint = (stage: string, signal?: AbortSignal): void => {
+      assert.ok(signal)
+      if (cancel && stage === cancelAt) service.cancelInstallation()
+      signal.throwIfAborted()
+    }
+    const service = new MinecraftService(
+      instances,
+      { getValidMinecraftSession: async () => ({ account, accessToken: '0' }) },
+      {
+        ensureRuntime: async (_config, _report, signal) => {
+          checkpoint('java', signal)
+          return 'java.exe'
+        }
+      },
+      {
+        ensureMinecraftInstalled: async (_config, _game, _java, _report, signal) => {
+          checkpoint('minecraft', signal)
+          return {} as ResolvedVersion
+        },
+        ensureLoaderInstalled: async (_config, _game, _java, _report, signal) => {
+          checkpoint('loader', signal)
+          return '1.21.1'
+        }
+      },
+      {
+        launch: async () => {
+          launched++
+        }
+      },
+      { running: false }
+    )
+    const options = {
+      accountId: account.id,
+      instanceId: 'main',
+      minMemoryMb: 512,
+      maxMemoryMb: 1024
+    }
+    await service.launch(options)
+    assert.equal(launched, 0)
+    assert.equal(service.getState().state, 'idle')
+    assert.equal(service.getState().error, undefined)
+    cancel = false
+    await service.launch(options)
+    assert.equal(launched, 1)
+  })
+}
+
 for (const exitCode of [0, 1]) {
   test(`real child process exit ${exitCode} updates state and releases lock`, async () => {
     const processes = new GameProcessService()

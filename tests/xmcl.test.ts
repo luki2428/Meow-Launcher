@@ -5,6 +5,38 @@ import { runXmclTask } from '../src/main/minecraft/XmclTaskRunner'
 import { join, resolve } from 'node:path'
 import { task } from '@xmcl/task'
 
+test('installation cancellation waits for writes and does not retry', async () => {
+  const controller = new AbortController()
+  let writing = false
+  let attempts = 0
+  class Slow extends DownloadTask {
+    protected async process(): Promise<void> {
+      writing = true
+      controller.abort()
+      await new Promise((resolve) => setTimeout(resolve, 30))
+      writing = false
+    }
+  }
+  const game = resolve('out/tests/download-fixture')
+  await assert.rejects(
+    runXmclTask(
+      () => {
+        attempts++
+        return new Slow({
+          destination: join(game, 'cancel.jar'),
+          url: 'https://libraries.minecraft.net/cancel.jar'
+        })
+      },
+      game,
+      'minecraft',
+      () => {},
+      controller.signal
+    )
+  )
+  assert.equal(writing, false)
+  assert.equal(attempts, 1)
+})
+
 test('retry waits for sibling writes after an early dependency failure', async () => {
   const game = resolve('out/tests/download-fixture')
   let attempt = 0

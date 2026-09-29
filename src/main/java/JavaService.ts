@@ -61,8 +61,10 @@ export class JavaService {
   }
   async ensureRuntime(
     config: InstanceConfig,
-    report: (progress: LauncherProgress) => void
+    report: (progress: LauncherProgress) => void,
+    signal?: AbortSignal
   ): Promise<string> {
+    signal?.throwIfAborted()
     if (process.platform !== 'win32' || process.arch !== config.java.architecture)
       throw new LauncherError(
         'JAVA_RUNTIME_UNSUPPORTED_PLATFORM',
@@ -81,7 +83,8 @@ export class JavaService {
             ['amd64', 'x86_64'].includes(version.architecture)
           )
         },
-        report
+        report,
+        signal
       )
     }
     if (!(await this.verifyRuntime(config.id, config)))

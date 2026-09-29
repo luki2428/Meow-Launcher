@@ -42,7 +42,8 @@ export class JavaRuntimeInstaller {
     config: InstanceConfig,
     runtime: string,
     verify: (path: string) => Promise<boolean>,
-    report: (progress: LauncherProgress) => void
+    report: (progress: LauncherProgress) => void,
+    signal?: AbortSignal
   ): Promise<void> {
     if (process.platform !== 'win32' || process.arch !== config.java.architecture)
       throw new LauncherError(
@@ -58,13 +59,20 @@ export class JavaRuntimeInstaller {
       const assets = assetsSchema.parse(
         await fetchJson(
           `https://api.adoptium.net/v3/assets/latest/${config.java.majorVersion}/hotspot?architecture=x64&image_type=jdk&os=windows&vendor=eclipse`,
-          hosts
+          hosts,
+          signal
         )
       )
       const pack = assets[0].binary.package
       const archive = join(stage, 'runtime.zip')
-      await downloadVerified(pack.link, hosts, archive, pack.checksum, pack.size, (progress) =>
-        report({ stage: 'java', progress, message: 'Pobieranie Java Runtime…' })
+      await downloadVerified(
+        pack.link,
+        hosts,
+        archive,
+        pack.checksum,
+        pack.size,
+        (progress) => report({ stage: 'java', progress, message: 'Pobieranie Java Runtime…' }),
+        signal
       )
       report({ stage: 'java', message: `Instalowanie Java ${config.java.majorVersion}…` })
       const extracted = join(stage, 'extracted')
@@ -74,6 +82,7 @@ export class JavaRuntimeInstaller {
         let expanded = 0
         let count = 0
         for await (const entry of walkEntriesGenerator(zip)) {
+          signal?.throwIfAborted()
           if (++count > 50_000 || (expanded += entry.uncompressedSize) > 2 * 1024 ** 3)
             throw new Error('Archive too large')
           const path = inside(extracted, entry.fileName)
@@ -86,7 +95,8 @@ export class JavaRuntimeInstaller {
           await mkdir(dirname(path), { recursive: true })
           await pipeline(
             await openEntryReadStream(zip, entry),
-            createWriteStream(path, { flags: 'wx' })
+            createWriteStream(path, { flags: 'wx' }),
+            { signal }
           )
         }
       } finally {
@@ -100,6 +110,7 @@ export class JavaRuntimeInstaller {
           'JAVA_RUNTIME_INVALID',
           'Pobrany runtime Java ma nieprawidłową wersję lub architekturę.'
         )
+      signal?.throwIfAborted()
       log.info('Java: verified runtime', config.java.majorVersion)
       await rm(backup, { recursive: true, force: true })
       let moved = false

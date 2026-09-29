@@ -47,6 +47,13 @@ export function useLauncher(): {
     })
   }, [reload])
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      void reload()
+    }, 30_000)
+    return () => clearInterval(timer)
+  }, [reload])
+
   const updateSettings = async (
     action: () => Promise<Result<LauncherSettings>>
   ): Promise<Result<LauncherSettings>> => {

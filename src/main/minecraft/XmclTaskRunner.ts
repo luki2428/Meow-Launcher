@@ -1,6 +1,6 @@
 import { DownloadTask, DownloadMultipleTask } from '@xmcl/installer'
 import type { DownloadOptions } from '@xmcl/file-transfer'
-import type { Task } from '@xmcl/task'
+import { TaskGroup, type Task } from '@xmcl/task'
 import { lstatSync } from 'node:fs'
 import { basename, relative, resolve, sep, join } from 'node:path'
 import { inside } from '../shared/validation'
@@ -54,24 +54,47 @@ export async function runXmclTask<T>(
   factory: () => Task<T>,
   game: string,
   stage: LauncherProgress['stage'],
-  report: (progress: LauncherProgress) => void
+  report: (progress: LauncherProgress) => void,
+  signal?: AbortSignal
 ): Promise<T> {
   for (let attempt = 0; ; attempt++) {
+    signal?.throwIfAborted()
     const task = factory()
     const children = new Set<Task<unknown>>()
+    const completions = new Map<Task<unknown>, { promise: Promise<void>; done: () => void }>()
+    const cancelled = new Set<Task<unknown>>()
+    const cancel = (): void => {
+      for (const child of children) {
+        // Groups propagate cancellation themselves; cancel leaves once to avoid
+        // overwriting XMCL's abort completion callback with a second cancel.
+        if (child instanceof TaskGroup || cancelled.has(child)) continue
+        cancelled.add(child)
+        void child.cancel().catch(() => {})
+      }
+    }
+    signal?.addEventListener('abort', cancel, { once: true })
     let timedOut = false
     let last = 0
     const timeout = setTimeout(() => {
       timedOut = true
-      for (const child of children) void child.cancel().catch(() => {})
+      cancel()
     }, 20 * 60_000)
     try {
       return await task.startAndWait({
         onStart: (child) => {
+          signal?.throwIfAborted()
+          if (timedOut) throw new Error('Installation timed out')
           if (child instanceof DownloadTask) SingleDownload.prepare(child, game)
           if (child instanceof DownloadMultipleTask) MultipleDownload.prepare(child, game)
           children.add(child)
+          let done!: () => void
+          const promise = new Promise<void>((resolve) => {
+            done = resolve
+          })
+          completions.set(child, { promise, done })
         },
+        onSucceed: (child) => completions.get(child)?.done(),
+        onFailed: (child) => completions.get(child)?.done(),
         onUpdate: (child) => {
           if (Date.now() - last < 150) return
           last = Date.now()
@@ -90,9 +113,11 @@ export async function runXmclTask<T>(
         }
       })
     } catch (error) {
-      await Promise.allSettled([...children].map((child) => child.wait()))
+      await Promise.allSettled([...completions.values()].map((entry) => entry.promise))
+      signal?.throwIfAborted()
       if (attempt === 2 || timedOut || task.isCancelled) throw error
     } finally {
+      signal?.removeEventListener('abort', cancel)
       clearTimeout(timeout)
     }
   }

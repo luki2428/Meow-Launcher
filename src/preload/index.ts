@@ -16,6 +16,7 @@ const launcher: LauncherAPI = {
   minecraft: {
     launch: (options) => ipcRenderer.invoke(IPC.minecraftLaunch, options),
     getState: () => ipcRenderer.invoke(IPC.minecraftState),
+    cancelInstallation: () => ipcRenderer.invoke(IPC.minecraftCancelInstallation),
     cancelModpackUpdate: () => ipcRenderer.invoke(IPC.minecraftCancelModpack),
     onProgress: (callback) => {
       const listener = (

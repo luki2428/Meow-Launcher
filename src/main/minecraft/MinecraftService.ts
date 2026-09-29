@@ -16,7 +16,7 @@ export class MinecraftService {
   readonly events = new EventEmitter()
   private snapshot: GameSnapshot = { state: 'idle' }
   private preparing = false
-  private modpackAbort?: AbortController
+  private installationAbort?: AbortController
   constructor(
     private readonly instances: InstanceService,
     private readonly auth: Pick<AuthService, 'getValidMinecraftSession'>,
@@ -33,18 +33,27 @@ export class MinecraftService {
     return structuredClone(this.snapshot)
   }
   cancelModpackUpdate(): void {
-    // Committing verified files is short and must finish before accepting cancellation.
-    if (
-      this.snapshot.state === 'updating-modpack' &&
-      this.snapshot.progress?.stage !== 'installing'
-    )
-      this.modpackAbort?.abort()
+    this.cancelInstallation()
+  }
+  cancelInstallation(): void {
+    if (!this.preparing || ['launching', 'running'].includes(this.snapshot.state)) return
+    this.installationAbort?.abort()
+    this.report({
+      stage: this.snapshot.progress?.stage ?? 'checking',
+      message: 'Anulowanie instalacji…'
+    })
   }
   private update = (state: GameSnapshot): void => {
     this.snapshot = state
     this.events.emit('state', this.getState())
   }
   private report = (progress: LauncherProgress): void => {
+    if (this.installationAbort?.signal.aborted) {
+      progress = { stage: progress.stage, message: 'Anulowanie instalacji…' }
+    }
+    if (this.installationAbort?.signal.aborted) {
+      progress = { stage: progress.stage, message: 'Anulowanie instalacji…' }
+    }
     this.update({ ...this.snapshot, progress })
   }
   private stage(state: GameState, stage: LauncherProgress['stage'], message: string): void {
@@ -62,9 +71,13 @@ export class MinecraftService {
     )
       throw new LauncherError('INVALID_RAM', 'Wybrana ilość RAM przekracza dostępny limit.')
     this.preparing = true
+    this.installationAbort = new AbortController()
+    const signal = this.installationAbort.signal
     try {
       this.stage('preparing', 'checking', 'Sprawdzanie instancji…')
       let config = await this.instances.load(options.instanceId)
+      signal.throwIfAborted()
+      signal.throwIfAborted()
       if (!config.playEnabled)
         throw new LauncherError(
           'PLAY_DISABLED',
@@ -72,13 +85,23 @@ export class MinecraftService {
         )
       this.stage('preparing', 'auth', 'Sprawdzanie sesji konta…')
       await this.auth.getValidMinecraftSession(options.accountId)
+      signal.throwIfAborted()
+      signal.throwIfAborted()
       if (config.modpack && this.modpack) {
         this.stage('updating-modpack', 'checking', 'Sprawdzanie aktualizacji paczki…')
-        this.modpackAbort = new AbortController()
         try {
-          const manifest = await this.modpack.check(config, this.report, this.modpackAbort.signal)
+          const manifest = await this.modpack.check(
+            config,
+            this.report,
+            this.installationAbort.signal
+          )
           if (manifest) {
-            await this.modpack.synchronize(config, manifest, this.report, this.modpackAbort.signal)
+            await this.modpack.synchronize(
+              config,
+              manifest,
+              this.report,
+              this.installationAbort.signal
+            )
             config = {
               ...config,
               minecraft: manifest.minecraft,
@@ -87,31 +110,50 @@ export class MinecraftService {
             }
           }
         } catch (error) {
-          if (this.modpackAbort.signal.aborted)
+          if (this.installationAbort.signal.aborted)
             throw new LauncherError('MODPACK_CANCELLED', 'Aktualizacja paczki została anulowana.')
           throw error
-        } finally {
-          this.modpackAbort = undefined
         }
       }
+      signal.throwIfAborted()
       this.stage('installing-java', 'java', 'Sprawdzanie Java Runtime…')
-      const java = await this.java.ensureRuntime(config, this.report)
+      const java = await this.java.ensureRuntime(config, this.report, signal)
       const game = this.instances.game(config.id)
+      signal.throwIfAborted()
       this.stage('installing-minecraft', 'minecraft', `Sprawdzanie Minecraft ${config.minecraft}…`)
-      await this.installer.ensureMinecraftInstalled(config, game, java, this.report)
+      await this.installer.ensureMinecraftInstalled(config, game, java, this.report, signal)
+      signal.throwIfAborted()
       this.stage('installing-loader', 'loader', 'Sprawdzanie loadera…')
-      const version = await this.installer.ensureLoaderInstalled(config, game, java, this.report)
+      const version = await this.installer.ensureLoaderInstalled(
+        config,
+        game,
+        java,
+        this.report,
+        signal
+      )
+      signal.throwIfAborted()
+      signal.throwIfAborted()
       const session = await this.auth.getValidMinecraftSession(options.accountId)
+      signal.throwIfAborted()
       this.stage('launching', 'launching', 'Uruchamianie Minecraft…')
       log.info('Minecraft: launch')
       await this.adapter.launch(options, session, java, game, version, this.update)
     } catch (error) {
+      if (signal.aborted) {
+        log.info('Minecraft: installation cancelled')
+        this.update({
+          state: 'idle',
+          progress: { stage: 'checking', message: 'Instalacja anulowana.' }
+        })
+        return
+      }
       const safe = safeError(error)
       log.error('Minecraft: operation failed', safe.code)
       this.update({ state: 'error', error: safe })
       throw new LauncherError(safe.code, safe.message)
     } finally {
       this.preparing = false
+      this.installationAbort = undefined
     }
   }
 }

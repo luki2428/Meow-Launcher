@@ -133,3 +133,28 @@
   outline: 2px solid #c3a7f9;
   outline-offset: 2px;
 }
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+.communityButton {
+  display: grid;
+  place-items: center;
+  width: 4.4rem;
+  height: 4.4rem;
+  padding: 0;
+  border: 1px solid #36343d;
+  border-radius: 1.2rem;
+  background: #242329;
+  color: #c3a7f9;
+
+  &:hover:not(:disabled) {
+    background: #2f2c36;
+  }
+  &:focus-visible {
+    outline: 2px solid #c3a7f9;
+    outline-offset: 2px;
+  }
+}

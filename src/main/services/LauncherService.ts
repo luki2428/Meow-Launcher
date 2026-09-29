@@ -1,3 +1,5 @@
+import { CommunityService } from './CommunityService'
+import { ServerStatusService } from './ServerStatusService'
 import type { LauncherSnapshot } from '../../shared/types'
 import type { SettingsService } from './SettingsService'
 import type { AuthService } from '../auth/AuthService'
@@ -6,6 +8,8 @@ import type { DeveloperPackService } from './DeveloperPackService'
 import type { ModpackService } from '../modpack/ModpackService'
 
 export class LauncherService {
+  private readonly serverStatus = new ServerStatusService()
+  community?: CommunityService
   updater?: import('./UpdateService').UpdateService
   constructor(
     private readonly version: string,
@@ -20,12 +24,15 @@ export class LauncherService {
     const modpackVersion = this.developer.enabled
       ? 'local-dev'
       : await this.modpack.installedVersion()
+    const remote = await this.community?.get()
+    const server = await this.serverStatus.get(remote?.config.server ?? null)
     return {
+      community: remote?.content,
       version: this.version,
       settings: this.settings.getSettings(),
       memory: this.settings.memory,
       settingsWarning: this.settings.warning,
-      server: { status: 'unknown', message: 'Status serwera nie został jeszcze sprawdzony.' },
+      server,
       edition: {
         status: 'coming-soon',
         name: this.developer.enabled ? 'Lokalna paczka testowa' : 'Instancja główna',

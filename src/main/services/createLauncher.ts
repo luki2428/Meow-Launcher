@@ -1,3 +1,4 @@
+import { CommunityService } from './CommunityService'
 import { app, safeStorage } from 'electron'
 import Store from 'electron-store'
 import { LauncherService } from './LauncherService'
@@ -51,5 +52,18 @@ export function createLauncher(): LauncherService {
     processes,
     modpack
   )
-  return new LauncherService(app.getVersion(), settings, auth, minecraft, developer, modpack)
+  const launcher = new LauncherService(
+    app.getVersion(),
+    settings,
+    auth,
+    minecraft,
+    developer,
+    modpack
+  )
+  launcher.community = new CommunityService(
+    process.env.LAUNCHER_COMMUNITY_URL ||
+      import.meta.env.MAIN_VITE_COMMUNITY_URL ||
+      'https://raw.githubusercontent.com/luki2428/Meow-Launcher/main/launcher-config'
+  )
+  return launcher
 }

@@ -60,6 +60,10 @@ export function registerServiceHandlers(
     z.tuple([]).parse(args)
     return launcher.minecraft.getState()
   })
+  handle(IPC.minecraftCancelInstallation, (...args) => {
+    z.tuple([]).parse(args)
+    return launcher.minecraft.cancelInstallation()
+  })
   handle(IPC.minecraftCancelModpack, (...args) => {
     z.tuple([]).parse(args)
     return launcher.minecraft.cancelModpackUpdate()

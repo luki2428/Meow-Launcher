@@ -38,15 +38,27 @@ export function Home({
       <section className={style.info} aria-label="Informacje o serwerze i paczce">
         <div>
           <span>SERWER</span>
-          <strong title={snapshot.server.message}>
+          <strong
+            title={[
+              snapshot.server.message,
+              snapshot.server.version,
+              snapshot.server.ping !== undefined ? snapshot.server.ping + ' ms' : ''
+            ]
+              .filter(Boolean)
+              .join(' · ')}
+          >
             <i />
-            Status nieznany
+            {snapshot.server.status === 'online'
+              ? 'Online'
+              : snapshot.server.status === 'offline'
+                ? 'Offline'
+                : 'Status nieznany'}
           </strong>
         </div>
         <div>
           <span>GRACZE ONLINE</span>
           <strong>
-            — <small>/ —</small>
+            {snapshot.server.players ?? '—'} <small>/ {snapshot.server.maxPlayers ?? '—'}</small>
           </strong>
         </div>
         <div>
@@ -114,7 +126,7 @@ export function Home({
                   : !snapshot.account
                     ? 'Zaloguj się, aby rozpocząć.'
                     : snapshot.edition.playEnabled
-                      ? 'Gotowy do gry'
+                      ? (game.progress?.message ?? 'Gotowy do gry')
                       : snapshot.edition.message)}
             </p>
             {busy && game.progress?.bytesPerSecond !== undefined && (
@@ -137,12 +149,18 @@ export function Home({
           </div>
         </div>
         <div className={style.actions}>
-          {game.state === 'updating-modpack' && game.progress?.stage !== 'installing' && (
+          {[
+            'preparing',
+            'updating-modpack',
+            'installing-java',
+            'installing-minecraft',
+            'installing-loader'
+          ].includes(game.state) && (
             <button
               className={`${style.settings} ${style.cancel}`}
               onClick={() => {
                 void window.launcher.minecraft
-                  .cancelModpackUpdate()
+                  .cancelInstallation()
                   .then((result) => {
                     if (!result.ok) setError(result.error.message)
                   })

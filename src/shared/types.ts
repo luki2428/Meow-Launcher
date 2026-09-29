@@ -33,7 +33,8 @@ export interface LauncherSnapshot {
   settings: LauncherSettings
   memory: { min: number; max: number; step: number }
   settingsWarning: string | null
-  server: { status: 'unknown'; message: string }
+  server: import('./community').ServerStatus
+  community?: import('./community').CommunityContent
   edition: { status: 'coming-soon' | 'active'; name: string; playEnabled: boolean; message: string }
   modpackVersion: string | null
   account: LauncherAccount | null

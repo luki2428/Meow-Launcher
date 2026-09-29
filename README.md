@@ -271,6 +271,8 @@ Potwierdzona instalacja: Minecraft 1.21.1, Fabric 0.19.5, NeoForge 21.1.251, For
 
 </details>
 
+Konfiguracja newsów, changelogu i adresu serwera: [instrukcja](docs/community.md).
+
 ## 🗺️ Roadmapa
 
 - [x] Electron + React + TypeScript + IPC
@@ -280,12 +282,12 @@ Potwierdzona instalacja: Minecraft 1.21.1, Fabric 0.19.5, NeoForge 21.1.251, For
 - [x] Fabric / Forge / NeoForge
 - [x] Logowanie Microsoft
 - [ ] Konfiguracja online i status edycji
-- [ ] Status serwera (Server List Ping)
+- [x] Status serwera (Server List Ping)
 - [x] Synchronizacja modpacka z manifestu (SHA-256, usuwanie starych plików, anulowanie pobierania paczki)
-- [ ] Anulowanie instalacji
+- [x] Anulowanie instalacji
 - [x] Auto-update launchera przy starcie — [publikowanie wydań](docs/launcher-updates.md)
 - [ ] Podpisany instalator
-- [ ] Changelog i newsy
+- [x] Changelog i newsy
 
 ---
 

@@ -1,0 +1,33 @@
+.community {
+  padding: 2.4rem;
+  color: #bbb6c9;
+}
+.feeds {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+}
+.feeds h2,
+.feeds h3 {
+  color: #ede8f5;
+  margin-bottom: 1rem;
+}
+.feeds article {
+  padding: 1.6rem;
+  margin-top: 1rem;
+  background: #211e2b;
+  border-radius: 1rem;
+}
+.feeds p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+.feeds time {
+  font-size: 1.2rem;
+}
+@media (max-width: 650px) {
+  .feeds {
+    grid-template-columns: 1fr;
+  }
+}

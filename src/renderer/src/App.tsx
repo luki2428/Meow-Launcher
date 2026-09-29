@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
+import { Newspaper } from 'lucide-react'
+import { Community } from './components/Community'
 import { Button } from './components/Button'
 import { Modal } from './components/Modal'
 import { Accounts } from './components/Accounts'
@@ -11,7 +13,7 @@ import style from './App.module.scss'
 
 function App(): React.JSX.Element {
   const { snapshot, error, reload, updateSettings } = useLauncher()
-  const [modal, setModal] = useState<'settings' | 'accounts' | null>(null)
+  const [modal, setModal] = useState<'settings' | 'accounts' | 'community' | null>(null)
   const [accountMenuOpen, setAccountMenuOpen] = useState(false)
   const accountMenu = useRef<HTMLDivElement>(null)
   const accountTrigger = useRef<HTMLButtonElement>(null)
@@ -36,56 +38,71 @@ function App(): React.JSX.Element {
             meow<span className={style.brandSub}>MINECRAFT LAUNCHER</span>
           </span>
         </div>
-        <div
-          className={style.accountMenu}
-          ref={accountMenu}
-          onBlur={(event) => {
-            if (!event.currentTarget.contains(event.relatedTarget)) setAccountMenuOpen(false)
-          }}
-          onKeyDown={(event) => {
-            if (event.key === 'Escape' && accountMenuOpen) {
-              event.preventDefault()
-              setAccountMenuOpen(false)
-              accountTrigger.current?.focus()
-            }
-          }}
-        >
+        <div className={style.headerActions}>
           <button
-            ref={accountTrigger}
-            className={style.account}
-            onClick={() =>
-              snapshot?.account ? setAccountMenuOpen((open) => !open) : setModal('accounts')
-            }
+            className={style.communityButton}
+            aria-label="Aktualności i changelog"
+            title="Aktualności i changelog"
+            aria-haspopup="dialog"
             disabled={!snapshot}
-            aria-haspopup={snapshot?.account ? undefined : 'dialog'}
-            aria-expanded={snapshot?.account ? accountMenuOpen : undefined}
-            aria-controls={snapshot?.account && accountMenuOpen ? 'account-options' : undefined}
+            onClick={() => {
+              setAccountMenuOpen(false)
+              setModal('community')
+            }}
           >
-            <AccountAvatar key={snapshot?.account?.id} account={snapshot?.account ?? null} />
-            <span>
-              <strong>{snapshot?.account?.username ?? 'Zaloguj się'}</strong>
-              {snapshot?.account && (
-                <small>
-                  {snapshot.account.type === 'microsoft' ? 'Konto Microsoft' : 'Nonpremium'}
-                </small>
-              )}
-            </span>
-            <span aria-hidden="true">⌄</span>
+            <Newspaper size={21} aria-hidden="true" />
           </button>
-          {snapshot?.account && accountMenuOpen && (
-            <div className={style.accountDropdown} id="account-options">
-              <button
-                aria-haspopup="dialog"
-                onClick={() => {
-                  setAccountMenuOpen(false)
-                  accountTrigger.current?.focus()
-                  setModal('accounts')
-                }}
-              >
-                Zmień konto
-              </button>
-            </div>
-          )}
+          <div
+            className={style.accountMenu}
+            ref={accountMenu}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) setAccountMenuOpen(false)
+            }}
+            onKeyDown={(event) => {
+              if (event.key === 'Escape' && accountMenuOpen) {
+                event.preventDefault()
+                setAccountMenuOpen(false)
+                accountTrigger.current?.focus()
+              }
+            }}
+          >
+            <button
+              ref={accountTrigger}
+              className={style.account}
+              onClick={() =>
+                snapshot?.account ? setAccountMenuOpen((open) => !open) : setModal('accounts')
+              }
+              disabled={!snapshot}
+              aria-haspopup={snapshot?.account ? undefined : 'dialog'}
+              aria-expanded={snapshot?.account ? accountMenuOpen : undefined}
+              aria-controls={snapshot?.account && accountMenuOpen ? 'account-options' : undefined}
+            >
+              <AccountAvatar key={snapshot?.account?.id} account={snapshot?.account ?? null} />
+              <span>
+                <strong>{snapshot?.account?.username ?? 'Zaloguj się'}</strong>
+                {snapshot?.account && (
+                  <small>
+                    {snapshot.account.type === 'microsoft' ? 'Konto Microsoft' : 'Nonpremium'}
+                  </small>
+                )}
+              </span>
+              <span aria-hidden="true">⌄</span>
+            </button>
+            {snapshot?.account && accountMenuOpen && (
+              <div className={style.accountDropdown} id="account-options">
+                <button
+                  aria-haspopup="dialog"
+                  onClick={() => {
+                    setAccountMenuOpen(false)
+                    accountTrigger.current?.focus()
+                    setModal('accounts')
+                  }}
+                >
+                  Zmień konto
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
       <main className={style.main}>
@@ -107,11 +124,19 @@ function App(): React.JSX.Element {
       </footer>
       {modal && snapshot && (
         <Modal
-          title={modal === 'settings' ? 'Ustawienia' : 'Dołącz do gry'}
+          title={
+            modal === 'settings'
+              ? 'Ustawienia'
+              : modal === 'community'
+                ? 'Aktualności i changelog'
+                : 'Dołącz do gry'
+          }
           compact={modal === 'accounts'}
           onClose={() => setModal(null)}
         >
-          {modal === 'settings' ? (
+          {modal === 'community' ? (
+            <Community content={snapshot.community} />
+          ) : modal === 'settings' ? (
             <Settings
               snapshot={snapshot}
               onDeveloperUpdate={async (action) => {
