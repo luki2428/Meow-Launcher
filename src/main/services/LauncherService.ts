@@ -6,6 +6,7 @@ import type { DeveloperPackService } from './DeveloperPackService'
 import type { ModpackService } from '../modpack/ModpackService'
 
 export class LauncherService {
+  updater?: import('./UpdateService').UpdateService
   constructor(
     private readonly version: string,
     readonly settings: SettingsService,

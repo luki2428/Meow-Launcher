@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Button } from './components/Button'
 import { Modal } from './components/Modal'
 import { Accounts } from './components/Accounts'
+import { AccountAvatar } from './components/AccountAvatar'
+import { LauncherUpdate } from './components/LauncherUpdate'
 import { useLauncher } from './hooks/useLauncher'
 import { Home } from './pages/Home'
 import { Settings } from './pages/Settings'
@@ -59,9 +61,7 @@ function App(): React.JSX.Element {
             aria-expanded={snapshot?.account ? accountMenuOpen : undefined}
             aria-controls={snapshot?.account && accountMenuOpen ? 'account-options' : undefined}
           >
-            <span className={style.avatar}>
-              {snapshot?.account?.username.slice(0, 2).toUpperCase() ?? '?'}
-            </span>
+            <AccountAvatar key={snapshot?.account?.id} account={snapshot?.account ?? null} />
             <span>
               <strong>{snapshot?.account?.username ?? 'Zaloguj się'}</strong>
               {snapshot?.account && (
@@ -103,6 +103,7 @@ function App(): React.JSX.Element {
       </main>
       <footer className={style.footer}>
         <span>MEOW LAUNCHER / {snapshot?.version ?? '…'}</span>
+        <LauncherUpdate />
       </footer>
       {modal && snapshot && (
         <Modal

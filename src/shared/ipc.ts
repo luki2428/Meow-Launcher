@@ -1,4 +1,6 @@
 export const IPC = {
+  updateState: 'launcher:update-state',
+  authSkin: 'auth:skin',
   authLoginMicrosoft: 'auth:login-microsoft',
   authLoginOffline: 'auth:login-offline',
   authLogout: 'auth:logout',

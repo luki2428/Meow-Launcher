@@ -27,6 +27,10 @@ export function registerHandlers(
     assertSender(event)
     return launcher.getSnapshot()
   })
+  ipcMain.handle(IPC.updateState, (event) => {
+    assertSender(event)
+    return launcher.updater?.getState() ?? { stage: 'disabled', message: '' }
+  })
   ipcMain.handle(IPC.setRam, (event, ram: unknown) => {
     assertSender(event)
     return launcher.settings.setRam(ram)

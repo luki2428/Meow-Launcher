@@ -1,10 +1,11 @@
 import { ipcMain, type IpcMainInvokeEvent, type BrowserWindow } from 'electron'
 import { z } from 'zod'
 import { IPC } from '../../shared/ipc'
-import { result } from '../shared/LauncherError'
+import { LauncherError, result } from '../shared/LauncherError'
 import { launchSchema, usernameSchema } from '../shared/validation'
 import type { LauncherService } from '../services/LauncherService'
 import type { GameSnapshot } from '../../shared/game'
+import { SkinService } from '../services/SkinService'
 
 export function registerServiceHandlers(
   window: BrowserWindow,
@@ -12,12 +13,18 @@ export function registerServiceHandlers(
   launcher: LauncherService
 ): void {
   const id = z.string().min(1).max(100)
+  const skins = new SkinService()
   const handle = (channel: string, action: (...args: unknown[]) => unknown): void => {
     ipcMain.handle(channel, (event, ...args: unknown[]) => {
       assertSender(event)
       return result(() => action(...args))
     })
   }
+  handle(IPC.authSkin, (...args) => {
+    const [value] = z.tuple([id]).parse(args)
+    const account = launcher.auth.accounts.getAccounts().find((entry) => entry.id === value)
+    return account?.type === 'microsoft' ? skins.getSkin(account.uuid) : null
+  })
   handle(IPC.authLoginMicrosoft, (...args) => {
     z.tuple([]).parse(args)
     return launcher.auth.loginMicrosoft()
@@ -44,6 +51,9 @@ export function registerServiceHandlers(
   })
   handle(IPC.minecraftLaunch, (...args) => {
     const [options] = z.tuple([launchSchema]).parse(args)
+    if (launcher.updater?.getState().stage === 'installing') {
+      throw new LauncherError('LAUNCHER_UPDATING', 'Trwa restart launchera po aktualizacji.')
+    }
     return launcher.minecraft.launch(options)
   })
   handle(IPC.minecraftState, (...args) => {

@@ -3,7 +3,9 @@ import { IPC } from '../shared/ipc'
 import type { LauncherAPI } from '../shared/types'
 
 const launcher: LauncherAPI = {
+  getUpdateState: () => ipcRenderer.invoke(IPC.updateState),
   auth: {
+    getSkin: (id) => ipcRenderer.invoke(IPC.authSkin, id),
     loginMicrosoft: () => ipcRenderer.invoke(IPC.authLoginMicrosoft),
     loginOffline: (username) => ipcRenderer.invoke(IPC.authLoginOffline, username),
     logout: (id) => ipcRenderer.invoke(IPC.authLogout, id),

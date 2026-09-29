@@ -43,6 +43,7 @@ export interface LaunchOptions {
   serverAddress?: string
 }
 export interface AuthAPI {
+  getSkin(accountId: string): Promise<Result<string | null>>
   loginMicrosoft(): Promise<Result<LauncherAccount>>
   loginOffline(username: string): Promise<Result<LauncherAccount>>
   logout(accountId: string): Promise<Result<void>>

@@ -3,6 +3,7 @@ productName: Meow Launcher
 directories:
   buildResources: build
 files:
+  - '!{.smoke,.npm-cache,.git,.github}/**'
   - '!**/.vscode/*'
   - '!{src,tests,examples,docs}/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
@@ -13,6 +14,7 @@ files:
 asarUnpack:
   - resources/**
 win:
+  target: nsis
   executableName: meowlauncher
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
@@ -33,3 +35,8 @@ linux:
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
+publish:
+  provider: github
+  owner: luki2428
+  repo: Meow-Launcher
+  releaseType: release

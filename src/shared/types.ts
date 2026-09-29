@@ -43,6 +43,7 @@ export type Result<T> =
   { ok: true; data: T } | { ok: false; error: { code: string; message: string } }
 
 export interface LauncherAPI {
+  getUpdateState(): Promise<import('./update').UpdateState>
   auth: import('./game').AuthAPI
   minecraft: import('./game').MinecraftAPI
   getSnapshot(): Promise<LauncherSnapshot>

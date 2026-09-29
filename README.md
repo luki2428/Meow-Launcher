@@ -283,7 +283,8 @@ Potwierdzona instalacja: Minecraft 1.21.1, Fabric 0.19.5, NeoForge 21.1.251, For
 - [ ] Status serwera (Server List Ping)
 - [x] Synchronizacja modpacka z manifestu (SHA-256, usuwanie starych plików, anulowanie pobierania paczki)
 - [ ] Anulowanie instalacji
-- [ ] Auto-update launchera i podpisany instalator
+- [x] Auto-update launchera przy starcie — [publikowanie wydań](docs/launcher-updates.md)
+- [ ] Podpisany instalator
 - [ ] Changelog i newsy
 
 ---
